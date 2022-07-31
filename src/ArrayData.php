@@ -136,11 +136,11 @@ final class ArrayData implements DataInterface
      *
      * If this is not set, the index of the data array will be used.
      *
-     * @return self The data provider itself.
-     *
      * @throws InvalidArgumentException
      *
      * {@see getKeys()}
+     *
+     * @return self The data provider itself.
      */
     public function key($key): self
     {

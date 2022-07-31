@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Forge\Data\Provider\Tests\Support\ActiveRecord;
 
-use Yiisoft\ActiveRecord\ActiveQuery;
 use Yiisoft\ActiveRecord\ActiveRecord;
 
 /**
  * User Active Record.
  *
  * Database fields:
+ *
  * @property int $id
  * @property string $username
  * @property string $email

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Forge\Data\Provider;
 
-use Throwable;
 use Yiisoft\ActiveRecord\ActiveQuery;
 use Yiisoft\ActiveRecord\ActiveRecord;
 use Yiisoft\Strings\Inflector;

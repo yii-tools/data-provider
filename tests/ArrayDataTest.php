@@ -8,7 +8,6 @@ use Forge\Data\Provider\ArrayData;
 use Forge\Data\Provider\Sort;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
 
 final class ArrayDataTest extends TestCase
 {
@@ -30,7 +29,7 @@ final class ArrayDataTest extends TestCase
     private array $simpleArray = [
         ['name' => 'zero'],
         ['name' => 'one'],
-        ['name' => 'two']
+        ['name' => 'two'],
     ];
 
     public function testGetARClasses(): void
@@ -111,7 +110,7 @@ final class ArrayDataTest extends TestCase
 
         $dataProvider = $dataProvider
             ->allData($this->nestedArray)
-            ->key(static fn($arClass) => $arClass['name']['first']);
+            ->key(static fn ($arClass) => $arClass['name']['first']);
         $dataProvider->getPagination()->pageSize(2);
 
         $this->assertSame(['joe', 'nikita'], $dataProvider->getKeys());
