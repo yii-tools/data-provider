@@ -15,7 +15,7 @@
 ## Instalación
 
 ```shell
-composer require <forge/data-provider>
+composer require forge/data-provider
 ```
 
 ## Análisis estático
