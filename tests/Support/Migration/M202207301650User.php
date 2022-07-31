@@ -44,7 +44,7 @@ final class M202207301650User implements RevertibleMigrationInterface
             [
                 [
                     'admin',
-                    'admin@example.com'
+                    'admin@example.com',
                 ],
                 [
                     'user',

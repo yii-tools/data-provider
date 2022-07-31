@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace Forge\Data\Provider\Tests;
 
 use Forge\Data\Provider\ActiveData;
-use Forge\Data\Provider\Sort;
 use Forge\Data\Provider\Tests\Support\ActiveRecord\User;
 use Forge\Data\Provider\Tests\Support\Helper\SqliteConnection;
-use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Yiisoft\ActiveRecord\ActiveQuery;
 
@@ -78,7 +76,7 @@ final class ActiveDataTest extends TestCase
 
         $dataProvider->getPagination()->pageSize(2);
         $dataProvider->getPagination()->currentPage(1);
-        $dataProvider->key(static fn($arClass) => $arClass['email']);
+        $dataProvider->key(static fn ($arClass) => $arClass['email']);
 
         $this->assertSame(['admin@example.com', 'user@example.com'], $dataProvider->getKeys());
 
