@@ -1,5 +1,5 @@
 {
-    "name": "php-forge/data-provider",
+    "name": "forge/data-provider",
     "type": "library",
     "description": "Proveedores de datos para Yii3.",
     "keywords": [
