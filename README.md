@@ -28,14 +28,14 @@ El código se analiza estáticamente con [Psalm](https://psalm.dev/docs). Para e
 
 ## Como usar el proveedor de datos
 
-### ArrayData
+### ArrayDataProvider
 
 ```php
 <?php
 
 declare(strict_types=1);
 
-use Forge\Data\Provider\ArrayData;
+use Forge\Data\Provider\ArrayDataProvider;
 use Yiisoft\ActiveRecord\ActiveQuery;
 
 private array $simpleArray = [
@@ -44,22 +44,22 @@ private array $simpleArray = [
     ['name' => 'two'],
 ];
 
-$dataProvider = new ArrayData();
+$dataProvider = new ArrayDataProvider();
 $dataProvider = $dataProvider->allData($this->simpleArray);
 ```
 
-### ActiveData
+### ActiveDataProvider
 
 ```php
 <?php
 
 declare(strict_types=1);
 
-use Forge\Data\Provider\ActiveData;
+use Forge\Data\Provider\ActiveDataProvider;
 use Yiisoft\ActiveRecord\ActiveQuery;
 
 $userQuery = new ActiveQuery(User::class, $this->db);
-$dataProvider = new ActiveData($userQuery);
+$dataProvider = new ActiveDataProvider($userQuery);
 ```
 
 

@@ -9,7 +9,7 @@ namespace Forge\Data\Provider;
  *
  * Data providers are components that sort and paginate data.
  */
-interface DataInterface
+interface DataProviderInterface
 {
     /**
      * Returns the data active record classes in the current page.

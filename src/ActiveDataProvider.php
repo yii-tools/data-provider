@@ -13,15 +13,15 @@ use function count;
 use function is_string;
 
 /**
- * ActiveData implements a data based on {@see ActiveQuery}.
+ * ActiveDataProvider implements a data based on {@see ActiveQuery}.
  *
- * ActiveData provides data by performing DB queries using {@see ActiveQuery}.
+ * ActiveDataProvider provides data by performing DB queries using {@see ActiveQuery}.
  *
- * The following is an example of using ActiveData to provide ActiveRecord instances:
+ * The following is an example of using ActiveDataProvider to provide ActiveRecord instances:
  *
  * ```php
  * $activeQuery = new ActiveQuery(MyClass::class, $db);
- * $data = new ActiveData($db, $activeQuery);
+ * $data = new ActiveDataProvider($db, $activeQuery);
  * ```
  *
  * And the following example shows how to use ActiveDataProvider without ActiveRecord:
@@ -29,12 +29,12 @@ use function is_string;
  * ```php
  *    $activeQuery = new ActiveQuery(MyClass::class, $db);
  *
- *    $provider = new ActiveData(
+ *    $provider = new ActiveDataProvider(
  *        $activeQuery->from('order')->orderBy('id')
  *    );
  * ```
  */
-final class ActiveData implements DataInterface
+final class ActiveDataProvider implements DataProviderInterface
 {
     /**
      * @var callable|string the column that is used as the key of the data active record class.

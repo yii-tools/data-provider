@@ -8,11 +8,11 @@ use InvalidArgumentException;
 use Yiisoft\Arrays\ArraySorter;
 
 /**
- * ArrayData implements a data based on a data array.
+ * ArrayDataProvider implements a data based on a data array.
  *
  * The {@see allData} property contains all data models that may be sorted and/or paginated.
  *
- * ArrayData will provide the data after sorting and/or pagination.
+ * ArrayDataProvider will provide the data after sorting and/or pagination.
  *
  * You may configure the {@see sort} and {@see pagination} properties to customize the sorting and pagination behaviors.
  *
@@ -22,13 +22,14 @@ use Yiisoft\Arrays\ArraySorter;
  * Make sure to set the {@see key} property to the name of the field that uniquely identifies a data record or false if
  * you do not have such a field.
  *
- * Compared to {@see ActiveData}, ArrayData could be less efficient because it needs to have {@see allData} ready.
+ * Compared to {@see ActiveDataProvider}, ArrayDataProvider could be less efficient because it needs to have
+ * {@see allData} ready.
  *
- * ArrayData may be used in the following way:
+ * ArrayDataProvider may be used in the following way:
  *
  * ```php
  * $query = new Query($db);
- * $provider = (new ArrayData())->allData($query->from('post')->all());
+ * $provider = (new ArrayDataProvider())->allData($query->from('post')->all());
  *
  * // get the posts in the current page
  * $posts = $provider->getModels();
@@ -37,7 +38,7 @@ use Yiisoft\Arrays\ArraySorter;
  * Note: if you want to use the sorting feature, you must configure the {@see sort} property so that the provider knows
  * which columns can be sorted.
  */
-final class ArrayData implements DataInterface
+final class ArrayDataProvider implements DataProviderInterface
 {
     private array $allData = [];
     /** @var callable|string */

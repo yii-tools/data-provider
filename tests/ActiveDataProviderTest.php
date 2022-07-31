@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace Forge\Data\Provider\Tests;
 
-use Forge\Data\Provider\ActiveData;
+use Forge\Data\Provider\ActiveDataProvider;
 use Forge\Data\Provider\Tests\Support\ActiveRecord\User;
 use Forge\Data\Provider\Tests\Support\Helper\SqliteConnection;
 use PHPUnit\Framework\TestCase;
 use Yiisoft\ActiveRecord\ActiveQuery;
 
-final class ActiveDataTest extends TestCase
+final class ActiveDataProviderTest extends TestCase
 {
     public function testGetARClasses(): void
     {
         $userQuery = new ActiveQuery(User::class, (new SqliteConnection())->createConnection());
-        $dataProvider = new ActiveData($userQuery);
+        $dataProvider = new ActiveDataProvider($userQuery);
         $user = $dataProvider->getARClasses();
 
         $this->assertSame(
@@ -35,7 +35,7 @@ final class ActiveDataTest extends TestCase
     public function testsCount(): void
     {
         $userQuery = new ActiveQuery(User::class, (new SqliteConnection())->createConnection());
-        $dataProvider = new ActiveData($userQuery);
+        $dataProvider = new ActiveDataProvider($userQuery);
 
         $this->assertSame(3, $dataProvider->getCount());
     }
@@ -43,7 +43,7 @@ final class ActiveDataTest extends TestCase
     public function testGetKeys(): void
     {
         $userQuery = new ActiveQuery(User::class, (new SqliteConnection())->createConnection());
-        $dataProvider = new ActiveData($userQuery);
+        $dataProvider = new ActiveDataProvider($userQuery);
 
         $this->assertSame([1, 2, 3], $dataProvider->getKeys());
 
@@ -60,7 +60,7 @@ final class ActiveDataTest extends TestCase
     public function testkey(): void
     {
         $userQuery = new ActiveQuery(User::class, (new SqliteConnection())->createConnection());
-        $dataProvider = new ActiveData($userQuery);
+        $dataProvider = new ActiveDataProvider($userQuery);
         $dataProvider->key('username');
 
         $this->assertSame(['admin', 'user', 'guest'], $dataProvider->getKeys());
@@ -88,7 +88,7 @@ final class ActiveDataTest extends TestCase
     public function testSort(): void
     {
         $userQuery = new ActiveQuery(User::class, (new SqliteConnection())->createConnection());
-        $dataProvider = new ActiveData($userQuery);
+        $dataProvider = new ActiveDataProvider($userQuery);
         $dataProvider->sortParams(['sort' => '-id']);
         $user = $dataProvider->getARClasses();
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Forge\Data\Provider\Tests;
 
-use Forge\Data\Provider\ArrayData;
+use Forge\Data\Provider\ArrayDataProvider;
 use Forge\Data\Provider\Sort;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
@@ -34,7 +34,7 @@ final class ArrayDataTest extends TestCase
 
     public function testGetARClasses(): void
     {
-        $dataProvider = new ArrayData();
+        $dataProvider = new ArrayDataProvider();
         $dataProvider = $dataProvider->allData($this->simpleArray);
 
         $this->assertSame($this->simpleArray, $dataProvider->getARClasses());
@@ -42,7 +42,7 @@ final class ArrayDataTest extends TestCase
 
     public function testGetARClassesWithEmptyArray(): void
     {
-        $dataProvider = new ArrayData();
+        $dataProvider = new ArrayDataProvider();
         $dataProvider = $dataProvider->allData([]);
 
         $this->assertSame([], $dataProvider->getARClasses());
@@ -50,7 +50,7 @@ final class ArrayDataTest extends TestCase
 
     public function testGetCount(): void
     {
-        $dataProvider = new ArrayData();
+        $dataProvider = new ArrayDataProvider();
         $dataProvider = $dataProvider->allData($this->simpleArray);
 
         $this->assertSame(3, $dataProvider->getCount());
@@ -58,7 +58,7 @@ final class ArrayDataTest extends TestCase
 
     public function testGetTotalCount(): void
     {
-        $dataProvider = new ArrayData();
+        $dataProvider = new ArrayDataProvider();
         $dataProvider = $dataProvider->allData($this->simpleArray);
         $user = $dataProvider->getARClasses();
 
@@ -69,13 +69,13 @@ final class ArrayDataTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The property "key" must be of type "string" or "callable".');
-        $dataProvider = new ArrayData();
+        $dataProvider = new ArrayDataProvider();
         $dataProvider = $dataProvider->key(['name']);
     }
 
     public function testGetKeys(): void
     {
-        $dataProvider = new ArrayData();
+        $dataProvider = new ArrayDataProvider();
         $dataProvider = $dataProvider->allData($this->simpleArray);
         $dataProvider->getPagination()->pageSize(2);
 
@@ -94,7 +94,7 @@ final class ArrayDataTest extends TestCase
 
     public function testInmutable(): void
     {
-        $dataProvider = new ArrayData();
+        $dataProvider = new ArrayDataProvider();
 
         $this->assertNotSame($dataProvider, $dataProvider->allData($this->simpleArray));
         $this->assertNotSame($dataProvider, $dataProvider->key('name'));
@@ -102,7 +102,7 @@ final class ArrayDataTest extends TestCase
 
     public function testKey(): void
     {
-        $dataProvider = new ArrayData();
+        $dataProvider = new ArrayDataProvider();
         $dataProvider = $dataProvider->allData($this->simpleArray)->key('name');
         $dataProvider->getPagination()->pageSize(2);
 
@@ -129,7 +129,7 @@ final class ArrayDataTest extends TestCase
                 ],
             )
             ->defaultOrder(['sort' => SORT_ASC]);
-        $dataProvider = new ArrayData(sort: $sort);
+        $dataProvider = new ArrayDataProvider(sort: $sort);
         $dataProvider = $dataProvider->allData($this->simpleArray);
 
         $this->assertSame([['name' => 'one'], ['name' => 'two'], ['name' => 'zero']], $dataProvider->getARClasses());
