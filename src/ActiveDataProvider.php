@@ -8,7 +8,6 @@ use InvalidArgumentException;
 use Yiisoft\ActiveRecord\ActiveQuery;
 use Yiisoft\ActiveRecord\ActiveRecord;
 use Yiisoft\Data\Reader\Sort;
-use Yiisoft\Strings\Inflector;
 
 use function array_keys;
 use function count;
