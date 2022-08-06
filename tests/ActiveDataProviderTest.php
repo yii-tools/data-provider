@@ -158,7 +158,8 @@ final class ActiveDataProviderTest extends TestCase
                         'email' => [
                             'asc' => ['email' => SORT_ASC],
                             'desc' => ['email' => SORT_DESC],
-                            'default' => 'desc']
+                            'default' => 'desc',
+                        ],
                     ],
                 )
             );
@@ -176,7 +177,8 @@ final class ActiveDataProviderTest extends TestCase
                         'email' => [
                             'asc' => ['email' => SORT_ASC],
                             'desc' => ['email' => SORT_DESC],
-                            'default' => 'asc']
+                            'default' => 'asc',
+                        ],
                     ],
                 )
             );
