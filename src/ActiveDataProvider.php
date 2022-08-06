@@ -94,13 +94,13 @@ final class ActiveDataProvider implements DataProviderInterface
             /** @var string */
             $pk = $pks[0];
 
-            /** @psalm-var array[] $arClasses */
+            /** @psalm-var array[] $readAll */
             foreach ($readAll as $read) {
                 /** @var string */
                 $keys[] = $read[$pk];
             }
         } else {
-            /** @psalm-var array[] $arClasses */
+            /** @psalm-var array[] $readAll */
             foreach ($readAll as $read) {
                 $kk = [];
 
@@ -122,10 +122,10 @@ final class ActiveDataProvider implements DataProviderInterface
         return $this->sort;
     }
 
-    public function key(callable|string $key): self
+    public function key(callable|string $value): self
     {
         $new = clone $this;
-        $new->key = $key;
+        $new->key = $value;
 
         return $new;
     }
@@ -152,10 +152,10 @@ final class ActiveDataProvider implements DataProviderInterface
         return $activeQuery->all();
     }
 
-    public function withSort(?Sort $value): static
+    public function withSort(?Sort $sort): static
     {
         $new = clone $this;
-        $new->sort = $value;
+        $new->sort = $sort;
 
         return $new;
     }
@@ -167,8 +167,6 @@ final class ActiveDataProvider implements DataProviderInterface
 
         /** @psalm-var string[] $attributes */
         $attributes = array_keys($arClass->getAttributes());
-
-        $sortAttribute = [];
 
         $new = clone $this;
         $new->sort = Sort::only($attributes)->withOrderString($value);
