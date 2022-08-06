@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Forge\Data\Provider;
 
+use InvalidArgumentException;
 use Yiisoft\ActiveRecord\ActiveQuery;
 use Yiisoft\ActiveRecord\ActiveRecord;
+use Yiisoft\Data\Reader\Sort;
 use Yiisoft\Strings\Inflector;
 
 use function array_keys;
@@ -51,75 +53,63 @@ final class ActiveDataProvider implements DataProviderInterface
      * @see getKeys()
      */
     private $key = '';
-    private Pagination|null $pagination = null;
+    private int $limit = 0;
+    private int $offset = 0;
     private Sort|null $sort = null;
 
     public function __construct(private ActiveQuery $activeQuery)
     {
     }
 
-    public function getARClasses(): array
+    public function count(): int
     {
         $activeQuery = $this->activeQuery;
 
-        $pagination = $this->getPagination();
-        $pagination->totalCount($this->getTotalCount());
-
-        if ($pagination->getTotalCount() === 0) {
-            return [];
-        }
-
-        $activeQuery->limit($pagination->getLimit())->offset($pagination->getOffset());
-        $activeQuery->addOrderBy($this->getSort()->getOrders());
-
-        return $activeQuery->all();
-    }
-
-    public function getCount(): int
-    {
-        return count($this->getARClasses());
+        return (int) $activeQuery->limit(-1)->offset(-1)->orderBy([])->count();
     }
 
     public function getKeys(): array
     {
-        $arClasses = $this->getARClasses();
         $keys = [];
+        $readAll = $this->read();
 
         if (!empty($this->key)) {
-            /** @psalm-var array[] $arClasses */
-            foreach ($arClasses as $arClass) {
+            /** @psalm-var array[] $readAll */
+            foreach ($readAll as $read) {
                 if (is_string($this->key)) {
                     /** @var mixed */
-                    $keys[] = $arClass[$this->key];
+                    $keys[] = $read[$this->key];
                 } else {
                     /** @var mixed */
-                    $keys[] = ($this->key)($arClass);
+                    $keys[] = ($this->key)($read);
                 }
             }
 
             return $keys;
         }
 
-        $arClass = $this->activeQuery->getARInstance();
-        $pks = $arClass->primaryKey();
+        $pks = $this->activeQuery->getARInstance()->primaryKey();
 
         if (count($pks) === 1) {
             /** @var string */
             $pk = $pks[0];
+
             /** @psalm-var array[] $arClasses */
-            foreach ($arClasses as $arClass) {
+            foreach ($readAll as $read) {
                 /** @var string */
-                $keys[] = $arClass[$pk];
+                $keys[] = $read[$pk];
             }
         } else {
             /** @psalm-var array[] $arClasses */
-            foreach ($arClasses as $arClass) {
+            foreach ($readAll as $read) {
                 $kk = [];
+
                 /** @psalm-var string[] $pks */
                 foreach ($pks as $pk) {
                     /** @var string */
-                    $kk[$pk] = $arClass[$pk];
+                    $kk[$pk] = $read[$pk];
                 }
+
                 $keys[] = $kk;
             }
         }
@@ -127,37 +117,50 @@ final class ActiveDataProvider implements DataProviderInterface
         return $keys;
     }
 
-    public function getPagination(): Pagination
+    public function getSort(): ?Sort
     {
-        if ($this->pagination === null) {
-            $this->pagination = new Pagination();
-        }
-
-        return $this->pagination;
-    }
-
-    public function getSort(): Sort
-    {
-        if ($this->sort === null) {
-            $this->sort = new Sort();
-        }
-
         return $this->sort;
     }
 
-    public function getTotalCount(): int
+    public function key(callable|string $key): self
+    {
+        $new = clone $this;
+        $new->key = $key;
+
+        return $new;
+    }
+
+    public function read(): array
     {
         $activeQuery = $this->activeQuery;
+        $criteria = $this->sort?->getCriteria() ?? '';
 
-        return (int) $activeQuery->limit(-1)->offset(-1)->orderBy([])->count();
+        $activeQuery->limit($this->limit)->offset($this->offset);
+        $activeQuery->addOrderBy($criteria);
+
+        return $activeQuery->all();
     }
 
-    public function key(callable|string $value): void
+    public function readOne()
     {
-        $this->key = $value;
+        $activeQuery = $this->activeQuery;
+        $criteria = $this->sort?->getCriteria() ?? '';
+
+        $activeQuery->limit(1);
+        $activeQuery->addOrderBy($criteria);
+
+        return $activeQuery->all();
     }
 
-    public function sortParams(array $sortParams = []): void
+    public function withSort(?Sort $value): static
+    {
+        $new = clone $this;
+        $new->sort = $value;
+
+        return $new;
+    }
+
+    public function sortParams(string $value = ''): static
     {
         /** @var ActiveRecord $arClass */
         $arClass = $this->activeQuery->getARInstance();
@@ -167,14 +170,29 @@ final class ActiveDataProvider implements DataProviderInterface
 
         $sortAttribute = [];
 
-        foreach ($attributes as $attribute) {
-            $sortAttribute[$attribute] = [
-                'asc' => [$attribute => SORT_ASC],
-                'desc' => [$attribute => SORT_DESC],
-                'label' => (new Inflector())->toHumanReadable($attribute),
-            ];
+        $new = clone $this;
+        $new->sort = Sort::only($attributes)->withOrderString($value);
+
+        return $new;
+    }
+
+    public function withLimit(int $limit): static
+    {
+        if ($limit < 0) {
+            throw new InvalidArgumentException('The limit must not be less than 0.');
         }
 
-        $this->getSort()->attributes($sortAttribute)->params($sortParams)->multiSort();
+        $new = clone $this;
+        $new->limit = $limit;
+
+        return $new;
+    }
+
+    public function withOffset(int $offset): static
+    {
+        $new = clone $this;
+        $new->offset = $offset;
+
+        return $new;
     }
 }
