@@ -12,8 +12,8 @@
     "require": {
         "php": "^8.0",
         "yiisoft/active-record": "^3.0@dev",
-        "yiisoft/db": "^3.0@dev",
-        "yiisoft/strings": "^2.0"
+        "yiisoft/data": "^3.0@dev",
+        "yiisoft/db": "^3.0@dev"
     },
     "require-dev": {
         "forge/test-utils": "^1.0@dev",
