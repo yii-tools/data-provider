@@ -1,96 +1,58 @@
 <p align="center">
-    <a href="https://github.com/php-forge/data-provider" target="_blank">
-        <img src="https://avatars.githubusercontent.com/u/103309199?s=400&u=ca3561c692f53ed7eb290d3bb226a2828741606f&v=4" height="100px">
+    <a href="https://github.com/yii-tools/awesome-component" target="_blank">
+        <img src="https://avatars.githubusercontent.com/u/121752654?s=200&v=4" height="100px">
     </a>
-    <h1 align="center">Proveedor de datos para yiisoft/db.</h1>
+    <h1 align="center">Data Provider for YiiFramework v. 3.0.</h1>
     <br>
 </p>
 
-[![Build Status](https://github.com/php-forge/data-provider/workflows/build/badge.svg)](https://github.com/php-forge/data-provider/actions?query=workflow%3Abuild)
-[![codecov](https://codecov.io/gh/php-forge/data-provider/branch/main/graph/badge.svg?token=KB6T5KMGED)](https://codecov.io/gh/php-forge/data-provider)
-[![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2Fphp-forge%2Ftemplate%2Fmain)](https://dashboard.stryker-mutator.io/reports/github.com/php-forge/data-provider/main)
-[![static analysis](https://github.com/php-forge/data-provider/workflows/static%20analysis/badge.svg)](https://github.com/php-forge/data-provider/actions?query=workflow%3A%22static+analysis%22)
-[![type-coverage](https://shepherd.dev/github/php-forge/data-provider/coverage.svg)](https://shepherd.dev/github/php-forge/data-provider)
+## Requirements
 
-## Instalación
+The minimun version of PHP required by this package is PHP 8.1.
 
-```shell
-composer require forge/data-provider
-```
+For install this package, you need [composer](https://getcomposer.org/).
 
-## Análisis estático
-
-El código se analiza estáticamente con [Psalm](https://psalm.dev/docs). Para ejecutarlo:
+## Install
 
 ```shell
-./vendor/bin/psalm
+composer require yii-tools/awesome-component
 ```
 
-## Como usar el proveedor de datos
+## Usage
 
-### ArrayDataProvider
+### ActiveIteratorDataProvider
 
 ```php
 <?php
 
 declare(strict_types=1);
 
-use Forge\Data\Provider\ArrayDataProvider;
+use Yii\DataProvider\ActiveIteratorDataProvider;
 use Yiisoft\ActiveRecord\ActiveQuery;
+use Yiisoft\Db\Connection\ConnectionInterface;
 
-private array $simpleArray = [
-    ['name' => 'zero'],
-    ['name' => 'one'],
-    ['name' => 'two'],
-];
-
-$dataProvider = new ArrayDataProvider();
-$dataProvider = $dataProvider->allData($this->simpleArray);
+/** @var ConnectionInterface $db */
+$userQuery = new ActiveQuery(User::class, $db);
+$activeIteratorDataProvider = new ActiveDataProvider($userQuery);
 ```
 
-### ActiveDataProvider
+## Testing
 
-```php
-<?php
+[Check the documentation testing](/docs/testing.md) to learn about testing.
 
-declare(strict_types=1);
+## CI status
 
-use Forge\Data\Provider\ActiveDataProvider;
-use Yiisoft\ActiveRecord\ActiveQuery;
+[![Build Status](https://github.com/yii-tools/data-provider/workflows/build/badge.svg)](https://github.com/yii-tools/data-provider/actions?query=workflow%3Abuild)
+[![codecov](https://codecov.io/gh/yii-tools/data-provider/branch/main/graph/badge.svg?token=KB6T5KMGED)](https://codecov.io/gh/yii-tools/data-provider)
+[![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2Fphp-forge%2Ftemplate%2Fmain)](https://dashboard.stryker-mutator.io/reports/github.com/yii-tools/data-provider/main)
+[![static analysis](https://github.com/yii-tools/data-provider/workflows/static%20analysis/badge.svg)](https://github.com/yii-tools/data-provider/actions?query=workflow%3A%22static+analysis%22)
+[![type-coverage](https://shepherd.dev/github/yii-tools/data-provider/coverage.svg)](https://shepherd.dev/github/yii-tools/data-provider)
+[![StyleCI](https://github.styleci.io/repos/518593668/shield?branch=main)](https://github.styleci.io/repos/518593668?branch=main)
 
-$userQuery = new ActiveQuery(User::class, $this->db);
-$dataProvider = new ActiveDataProvider($userQuery);
-```
+## License
 
+The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
 
-## Pruebas de mutación
+## Our social networks
 
-Las pruebas de mutación se comprueban con [Infection](https://infection.github.io/). Para ejecutarlo:
-
-```shell
-./vendor/bin/roave-infection-static-analysis-plugin
-```
-
-## Pruebas unitarias
-
-Las pruebas unitarias se comprueban con [PHPUnit](https://phpunit.de/). Para ejecutarlo:
-
-```shell
-./vendor/bin/phpunit
-```
-
-## Calidad y estilo de código
-
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/54109a976d414636883dff0993fc96b6)](https://www.codacy.com/gh/php-forge/data-provider/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=php-forge/data-provider&amp;utm_campaign=Badge_Grade)
-[![StyleCI](https://github.styleci.io/repos/518593668/shield?branch=main)](https://github.styleci.io/repos/518593668/shield?branch=main)
-
-## Licencia
-
-El paquete `php-forge/data-provider` es software libre. Se publica bajo los términos de la Licencia BSD.
-Consulte [`LICENSE`](./LICENSE.md) para obtener más información.
-
-Mantenido por [Terabytesoftw](https://github.com/terabytesoftw).
-
-## Nuestras redes sociales
-
-[![Twitter](https://img.shields.io/badge/twitter-follow-1DA1F2?logo=twitter&logoColor=1DA1F2&labelColor=555555?style=flat)](https://twitter.com/PhpForge)
+[![Twitter](https://img.shields.io/badge/twitter-follow-1DA1F2?logo=twitter&logoColor=1DA1F2&labelColor=555555?style=flat)](https://twitter.com/Terabytesoftw)
