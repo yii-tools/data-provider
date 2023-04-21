@@ -17,7 +17,7 @@ use function count;
  */
 final class ArrayIteratorProvider implements IteratorAggregate, Countable
 {
-    private int|null $limit = null;
+    private int|null $limit = 0;
     private int $offset = 0;
 
     public function __construct(private array $data)
@@ -36,7 +36,7 @@ final class ArrayIteratorProvider implements IteratorAggregate, Countable
 
     public function read(): array
     {
-        $offset = $this->offset >= 1 ? $this->limit * ($this->offset - 1) : $this->offset;
+        $offset = $this->offset >= 1 ? (int) $this->limit * ($this->offset - 1) : $this->offset;
 
         return array_slice($this->data, $offset, $this->limit);
     }
