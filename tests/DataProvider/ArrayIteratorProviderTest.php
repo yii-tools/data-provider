@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yii\DataProvider\Tests\Driver\Sqlite;
+namespace Yii\DataProvider\Tests\DataProvider;
 
 use Yii\DataProvider\ArrayIteratorProvider;
 use PHPUnit\Framework\TestCase;

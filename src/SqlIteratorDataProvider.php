@@ -8,30 +8,30 @@ use ArrayIterator;
 use Countable;
 use IteratorAggregate;
 use Traversable;
-use Yiisoft\ActiveRecord\ActiveQueryInterface;
+use Yiisoft\Db\Connection\ConnectionInterface;
+
+use function count;
 
 /**
- * Provides a way to iterate over the results of an Active Query with support for pagination.
+ * Provides a way to iterate over the results of a SQL query with support for pagination.
  *
  * @implements IteratorAggregate<int, array>
  */
-final class ActiveIteratorProvider implements IteratorAggregate, Countable
+final class SqlIteratorDataProvider implements IteratorAggregate, Countable
 {
     private int $limit = 0;
     private int $offset = 0;
 
-    public function __construct(private ActiveQueryInterface $activeQuery)
+    public function __construct(private ConnectionInterface $db, private string $sql, private array $params = [])
     {
     }
 
     /**
-     * Returns the total number of items in the query.
-     *
-     * @return int The total number of items in the query
+     * @return int The number of items in the result set.
      */
     public function count(): int
     {
-        return (int) $this->activeQuery->count();
+        return count($this->read());
     }
 
     /**
@@ -43,25 +43,24 @@ final class ActiveIteratorProvider implements IteratorAggregate, Countable
     }
 
     /**
-     * Returns an array with the results for the current page of the query.
+     * Returns an array of all items in the result set.
      *
-     * @return array An array with the results for the current page of the query
+     * @return array An array of all items in the result set.
      */
     public function read(): array
     {
         $offset = $this->offset >= 1 ? $this->limit * ($this->offset - 1) : $this->offset;
+        $sql = $this->db->getQueryBuilder()->buildOrderByAndLimit($this->sql, [], $this->limit, $offset);
 
-        return $this->activeQuery->limit($this->limit)->offset($offset)->all();
+        return $this->db->createCommand($sql, $this->params)->queryAll();
     }
 
     /**
-     * Returns an array with the result for the first item in the current page of the query.
-     *
-     * @return array An array with the result for the first item in the current page of the query
+     * @return array A single item from the result set.
      */
     public function readOne(): array
     {
-        return $this->activeQuery->limit(1)->offset($this->offset)->all();
+        return $this->withLimit(1)->read();
     }
 
     /**
