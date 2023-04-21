@@ -34,11 +34,7 @@ final class ActiveIteratorProvider implements IteratorAggregate, Countable
 
     public function read(): array
     {
-        $offset = $this->limit * ($this->offset - 1);
-
-        if ($offset === -1) {
-            $offset = $this->offset;
-        }
+        $offset = $this->offset >= 1 ? $this->limit * ($this->offset - 1) : $this->offset;
 
         return $this->activeQuery->limit($this->limit)->offset($offset)->all();
     }
