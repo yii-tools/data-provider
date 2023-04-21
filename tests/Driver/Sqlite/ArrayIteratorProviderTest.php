@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 final class ArrayIteratorProviderTest extends TestCase
 {
-    private array $data =  [
+    private array $data = [
         ['id' => 1, 'username' => 'admin', 'email' => 'admin@example.com'],
         ['id' => 2, 'username' => 'user', 'email' => 'user@example.com'],
         ['id' => 3, 'username' => 'guest', 'email' => 'guest@example.com'],
