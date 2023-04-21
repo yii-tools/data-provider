@@ -10,7 +10,7 @@ use Yii\DataProvider\Tests\Support\ActiveRecord\User;
 use Yiisoft\ActiveRecord\ActiveQuery;
 use Yiisoft\Db\Connection\ConnectionInterface;
 
-abstract class AbstractActiveDataProviderTest extends TestCase
+abstract class AbstractActiveIteratorDataProviderTest extends TestCase
 {
     protected ConnectionInterface $db;
 

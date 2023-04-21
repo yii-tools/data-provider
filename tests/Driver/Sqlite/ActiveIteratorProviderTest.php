@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Yii\DataProvider\Tests\Driver\Sqlite;
 
-use Yii\DataProvider\Tests\Base\AbstractActiveDataProviderTest;
+use Yii\DataProvider\Tests\Base\AbstractActiveIteratorDataProviderTest;
 use Yii\DataProvider\Tests\Support\Helper\SqliteConnection;
 
-final class ActiveIteratorProviderTest extends AbstractActiveDataProviderTest
+final class ActiveIteratorProviderTest extends AbstractActiveIteratorDataProviderTest
 {
     protected function setUp(): void
     {
