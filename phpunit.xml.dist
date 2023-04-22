@@ -5,8 +5,8 @@
   </php>
   <coverage/>
   <testsuites>
-    <testsuite name="Sqlite">
-      <directory>./tests/Driver/Sqlite</directory>
+    <testsuite name="DataProvider">
+      <directory>./tests/DataProvider</directory>
     </testsuite>
   </testsuites>
   <source>
