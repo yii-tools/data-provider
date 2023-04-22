@@ -80,7 +80,7 @@ abstract class AbstractSqlIteratorDataProviderTest extends TestCase
     public function testReadOne(): void
     {
         $sqlIteratorDataProvider = (new SqlIteratorDataProvider($this->db, 'SELECT * FROM {{%user}}'))->withLimit(1);
-        $data = $sqlIteratorDataProvider->read();
+        $data = $sqlIteratorDataProvider->readOne();
 
         $this->assertCount(1, $data);
         $this->assertSame(['id' => '1', 'username' => 'admin', 'email' => 'admin@example.com'], $data[0]);
