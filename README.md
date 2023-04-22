@@ -36,6 +36,38 @@ $userQuery = new ActiveQuery(User::class, $db);
 $activeIteratorDataProvider = new ActiveDataProvider($userQuery);
 ```
 
+### ArrayIteratorDataProvider
+
+```php
+<?php
+
+declare(strict_types=1);
+
+use Yii\DataProvider\ArrayIteratorDataProvider;
+
+$arrayIteratorDataProvider = new ArrayIteratorDataProvider(
+    [
+        ['id' => 1, 'name' => 'name1'],
+        ['id' => 2, 'name' => 'name2'],
+        ['id' => 3, 'name' => 'name3'],
+    ],
+);
+```
+
+### SqlIteratorDataProvider
+
+```php
+<?php
+
+declare(strict_types=1);
+
+use Yii\DataProvider\SqlIteratorDataProvider;
+use Yiisoft\Db\Connection\ConnectionInterface;
+
+/** @var ConnectionInterface $db */
+$sqlIteratorDataProvider = new SqlIteratorDataProvider($db, 'SELECT * FROM {{%user}}');
+```
+
 ## Testing
 
 [Check the documentation testing](/docs/testing.md) to learn about testing.
