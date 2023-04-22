@@ -44,7 +44,7 @@ $activeIteratorDataProvider = new ActiveDataProvider($userQuery);
 
 [![Build Status](https://github.com/yii-tools/data-provider/workflows/build/badge.svg)](https://github.com/yii-tools/data-provider/actions?query=workflow%3Abuild)
 [![codecov](https://codecov.io/gh/yii-tools/data-provider/branch/main/graph/badge.svg?token=KB6T5KMGED)](https://codecov.io/gh/yii-tools/data-provider)
-[![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2Fphp-forge%2Ftemplate%2Fmain)](https://dashboard.stryker-mutator.io/reports/github.com/yii-tools/data-provider/main)
+[![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2Fyii-tools%2Fdata-provider%2Fmain)](https://dashboard.stryker-mutator.io/reports/github.com/yii-tools/data-provider/main)
 [![static analysis](https://github.com/yii-tools/data-provider/workflows/static%20analysis/badge.svg)](https://github.com/yii-tools/data-provider/actions?query=workflow%3A%22static+analysis%22)
 [![type-coverage](https://shepherd.dev/github/yii-tools/data-provider/coverage.svg)](https://shepherd.dev/github/yii-tools/data-provider)
 [![StyleCI](https://github.styleci.io/repos/518593668/shield?branch=main)](https://github.styleci.io/repos/518593668?branch=main)
