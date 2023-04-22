@@ -1,5 +1,5 @@
 {
-    "name": "forge/data-provider",
+    "name": "yii-tools/data-provider",
     "type": "library",
     "description": "Proveedores de datos para Yii3.",
     "keywords": [
@@ -10,62 +10,31 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": "^8.0",
+        "php": "^8.1",
         "yiisoft/active-record": "^3.0@dev",
-        "yiisoft/data": "^3.0@dev",
-        "yiisoft/db": "^3.0@dev"
+        "yiisoft/db": "^1.0"
     },
     "require-dev": {
-        "forge/test-utils": "^1.0@dev",
-        "phpunit/phpunit": "*",
-        "roave/infection-static-analysis-plugin": "*",
-        "vimeo/psalm": "*",
-        "yiisoft/db-sqlite": "^3.0@dev",
-        "yiisoft/log-target-file": "^2.0",
-        "yiisoft/yii-db-migration": "^1.0@dev",
-        "yiisoft/yii-runner-console": "^1.1"
+        "maglnet/composer-require-checker": "^4.3",
+        "phpunit/phpunit": "^10.0",
+        "roave/infection-static-analysis-plugin": "^1.29",
+        "vimeo/psalm": "^5.8",
+        "yiisoft/cache": "^3.0",
+        "yiisoft/db-sqlite": "^1.0"
     },
     "autoload": {
         "psr-4": {
-            "Forge\\Data\\Provider\\": "src"
+            "Yii\\DataProvider\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Forge\\Data\\Provider\\Tests\\": "tests"
+            "Yii\\DataProvider\\Tests\\": "tests"
         }
     },
     "extra": {
         "branch-alias": {
             "dev-main": "1.0.x-dev"
-        },
-        "config-plugin-options": {
-            "source-directory": "config"
-        },
-        "config-plugin": {
-            "params": "params.php"
-        },
-        "config-plugin-environments": {
-            "tests": {
-                "params": "tests/params.php",
-                "bootstrap": "tests/bootstrap.php",
-                "bootstrap-console": [
-                    "$bootstrap",
-                    "tests/bootstrap-console.php"
-                ],
-                "common": [
-                    "tests/common/*.php"
-                ],
-                "console": [
-                    "$common",
-                    "tests/console/*.php"
-                ],
-                "events": "tests/events.php",
-                "events-console": [
-                    "$events",
-                    "tests/events-console.php"
-                ]
-            }
         }
     },
     "config": {
@@ -74,5 +43,11 @@
             "infection/extension-installer": true,
             "yiisoft/config": true
         }
+    },
+    "scripts": {
+        "check-dependencies": "composer-require-checker",
+        "mutation": "roave-infection-static-analysis-plugin",
+        "psalm": "psalm",
+        "test": "phpunit"
     }
 }
