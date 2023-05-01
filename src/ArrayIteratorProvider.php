@@ -71,12 +71,12 @@ final class ArrayIteratorProvider implements IteratorAggregate, Countable, Limit
     /**
      * Returns a new instance specifying the number of items to be returned per page.
      *
-     * @param int|null $limit The number of items to be returned per page.
+     * @param int|null $value The number of items to be returned per page.
      */
-    public function withLimit(int|null $limit): static
+    public function withLimit(int|null $value): static
     {
         $new = clone $this;
-        $new->limit = $limit;
+        $new->limit = $value;
 
         return $new;
     }
@@ -84,12 +84,12 @@ final class ArrayIteratorProvider implements IteratorAggregate, Countable, Limit
     /**
      * Returns a new instance specifying the number of items to be skipped before starting to return items.
      *
-     * @param int $offset The number of items to be skipped before starting to return items.
+     * @param int $value The number of items to be skipped before starting to return items.
      */
-    public function withOffset(int $offset): static
+    public function withOffset(int $value): static
     {
         $new = clone $this;
-        $new->offset = $offset;
+        $new->offset = $value;
 
         return $new;
     }

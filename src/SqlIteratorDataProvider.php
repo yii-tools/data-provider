@@ -68,12 +68,12 @@ final class SqlIteratorDataProvider implements IteratorAggregate, Countable, Lim
     /**
      * Returns a new instance specifying the number of items to be returned per page.
      *
-     * @param int $limit The number of items to be returned per page.
+     * @param int $value The number of items to be returned per page.
      */
-    public function withLimit(int $limit): static
+    public function withLimit(int $value): static
     {
         $new = clone $this;
-        $new->limit = $limit;
+        $new->limit = $value;
 
         return $new;
     }
@@ -81,12 +81,12 @@ final class SqlIteratorDataProvider implements IteratorAggregate, Countable, Lim
     /**
      * Returns a new instance specifying the number of items to be skipped before starting to return items.
      *
-     * @param int $offset The number of items to be skipped before starting to return items.
+     * @param int $value The number of items to be skipped before starting to return items.
      */
-    public function withOffset(int $offset): static
+    public function withOffset(int $value): static
     {
         $new = clone $this;
-        $new->offset = $offset;
+        $new->offset = $value;
 
         return $new;
     }
