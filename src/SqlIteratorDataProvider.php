@@ -8,6 +8,8 @@ use ArrayIterator;
 use Countable;
 use IteratorAggregate;
 use Traversable;
+use Yii\Interface\LimitInterface;
+use Yii\Interface\OffsetInterface;
 use Yiisoft\Db\Connection\ConnectionInterface;
 
 use function count;
@@ -17,7 +19,7 @@ use function count;
  *
  * @implements IteratorAggregate<int, array>
  */
-final class SqlIteratorDataProvider implements IteratorAggregate, Countable
+final class SqlIteratorDataProvider implements IteratorAggregate, Countable, LimitInterface, OffsetInterface
 {
     private int $limit = 0;
     private int $offset = 0;
@@ -66,12 +68,12 @@ final class SqlIteratorDataProvider implements IteratorAggregate, Countable
     /**
      * Returns a new instance specifying the number of items to be returned per page.
      *
-     * @param int $limit The number of items to be returned per page.
+     * @param int $value The number of items to be returned per page.
      */
-    public function withLimit(int $limit): static
+    public function withLimit(int $value): static
     {
         $new = clone $this;
-        $new->limit = $limit;
+        $new->limit = $value;
 
         return $new;
     }
@@ -79,12 +81,12 @@ final class SqlIteratorDataProvider implements IteratorAggregate, Countable
     /**
      * Returns a new instance specifying the number of items to be skipped before starting to return items.
      *
-     * @param int $offset The number of items to be skipped before starting to return items.
+     * @param int $value The number of items to be skipped before starting to return items.
      */
-    public function withOffset(int $offset): static
+    public function withOffset(int $value): static
     {
         $new = clone $this;
-        $new->offset = $offset;
+        $new->offset = $value;
 
         return $new;
     }
