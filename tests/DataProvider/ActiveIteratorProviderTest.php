@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yii\DataProvider\Tests\Driver\DataProvider;
+namespace Yii\DataProvider\Tests\DataProvider;
 
 use Yii\DataProvider\Tests\Base\AbstractActiveIteratorDataProviderTest;
 use Yii\DataProvider\Tests\Support\Helper\SqliteConnection;
