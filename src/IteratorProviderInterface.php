@@ -83,4 +83,3 @@ interface IteratorProviderInterface extends Countable, IteratorAggregate
      */
     public function withOffset(int $value): static;
 }
-

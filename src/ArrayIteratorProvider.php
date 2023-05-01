@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Yii\DataProvider;
 
 use ArrayIterator;
-use IteratorAggregate;
 use Traversable;
 
 use function array_slice;
