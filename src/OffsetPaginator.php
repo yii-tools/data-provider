@@ -17,6 +17,8 @@ use function ceil;
  * {@see totalCount|total item count}, {@see pageSize|page size}, {@see currentPage| current page}, etc.
  *
  * This information can be passed to {@see LinkPager|pagers} to render pagination buttons or links.
+ *
+ * @implements IteratorAggregate<int, array>
  */
 final class OffsetPaginator implements Countable, IteratorAggregate
 {
