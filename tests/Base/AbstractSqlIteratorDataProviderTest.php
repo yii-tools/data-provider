@@ -58,6 +58,20 @@ abstract class AbstractSqlIteratorDataProviderTest extends TestCase
         $this->assertCount(3, $sqlIteratorDataProvider->getIterator());
     }
 
+    public function testGetLimit(): void
+    {
+        $sqlIteratorDataProvider = (new SqlIteratorDataProvider($this->db, 'SELECT * FROM {{%user}}'))->withLimit(10);
+
+        $this->assertSame(10, $sqlIteratorDataProvider->getLimit());
+    }
+
+    public function testGetOffset(): void
+    {
+        $sqlIteratorDataProvider = (new SqlIteratorDataProvider($this->db, 'SELECT * FROM {{%user}}'))->withOffset(10);
+
+        $this->assertSame(10, $sqlIteratorDataProvider->getOffset());
+    }
+
     public function testImmutable(): void
     {
         $sqlIteratorDataProvider = new SqlIteratorDataProvider($this->db, 'SELECT * FROM {{%user}}');

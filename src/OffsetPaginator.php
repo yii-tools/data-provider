@@ -90,7 +90,7 @@ final class OffsetPaginator implements Countable, IteratorAggregate
     public function withOffset(int $value): self
     {
         if ($value < 1) {
-            throw new RuntimeException('Current page should be at least 1');
+            throw new RuntimeException('Current page should be at least 1.');
         }
 
         $new = clone $this;

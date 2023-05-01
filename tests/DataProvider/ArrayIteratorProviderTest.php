@@ -83,24 +83,4 @@ final class ArrayIteratorProviderTest extends TestCase
             $arrayIteratorProvider[0],
         );
     }
-
-    public function testWithLimitNull(): void
-    {
-        $arrayIteratorProvider = new ArrayIteratorProvider($this->data);
-        $arrayIteratorProvider = $arrayIteratorProvider->withLimit(null)->withOffset(1)->read();
-
-        $this->assertCount(3, $arrayIteratorProvider);
-        $this->assertSame(
-            ['id' => 1, 'username' => 'admin', 'email' => 'admin@example.com'],
-            $arrayIteratorProvider[0],
-        );
-        $this->assertSame(
-            ['id' => 2, 'username' => 'user', 'email' => 'user@example.com'],
-            $arrayIteratorProvider[1],
-        );
-        $this->assertSame(
-            ['id' => 3, 'username' => 'guest', 'email' => 'guest@example.com'],
-            $arrayIteratorProvider[2],
-        );
-    }
 }

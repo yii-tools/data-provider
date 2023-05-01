@@ -15,7 +15,7 @@ use function count;
  */
 final class ArrayIteratorProvider implements IteratorProviderInterface
 {
-    private int|null $limit = self::DEFAULT_LIMIT;
+    private int $limit = self::DEFAULT_LIMIT;
     private int $offset = self::DEFAULT_OFFSET;
 
     public function __construct(private array $data)
@@ -44,7 +44,7 @@ final class ArrayIteratorProvider implements IteratorProviderInterface
 
     public function read(): array
     {
-        $offset = $this->offset >= 1 ? (int) $this->limit * ($this->offset - 1) : $this->offset;
+        $offset = $this->offset >= 1 ? $this->limit * ($this->offset - 1) : $this->offset;
 
         return array_slice($this->data, $offset, $this->limit);
     }
@@ -54,7 +54,7 @@ final class ArrayIteratorProvider implements IteratorProviderInterface
         return array_slice($this->data, $this->offset, 1);
     }
 
-    public function withLimit(int|null $value): static
+    public function withLimit(int $value): static
     {
         $new = clone $this;
         $new->limit = $value;

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Yii\DataProvider\DataProvider\Paginator;
 
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use Yii\DataProvider\ArrayIteratorProvider;
 use Yii\DataProvider\OffsetPaginator;
 
@@ -67,6 +68,16 @@ final class OffsetPaginatorTest extends TestCase
         $this->assertSame(5, $newOffsetPaginator->getLimit());
     }
 
+    public function testWithLimitException(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Page size should be at least 1.');
+
+        $arrayIteratorProvider = new ArrayIteratorProvider($this->data);
+        $offsetPaginator = new OffsetPaginator($arrayIteratorProvider);
+        $offsetPaginator->withLimit(0);
+    }
+
     public function testWithOffset(): void
     {
         $arrayIteratorProvider = new ArrayIteratorProvider($this->data);
@@ -76,5 +87,15 @@ final class OffsetPaginatorTest extends TestCase
         $this->assertNotSame($offsetPaginator, $newOffsetPaginator);
         $this->assertSame(0, $offsetPaginator->getOffset());
         $this->assertSame(5, $newOffsetPaginator->getOffset());
+    }
+
+    public function testWithOffsetException(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Current page should be at least 1.');
+
+        $arrayIteratorProvider = new ArrayIteratorProvider($this->data);
+        $offsetPaginator = new OffsetPaginator($arrayIteratorProvider);
+        $offsetPaginator->withOffset(0);
     }
 }

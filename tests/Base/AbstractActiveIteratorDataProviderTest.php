@@ -61,6 +61,22 @@ abstract class AbstractActiveIteratorDataProviderTest extends TestCase
         $this->assertCount(3, $activeIteratorProvider->getIterator());
     }
 
+    public function testGetLimit(): void
+    {
+        $userQuery = new ActiveQuery(User::class, $this->db);
+        $activeIteratorProvider = (new ActiveIteratorProvider($userQuery))->withLimit(10);
+
+        $this->assertSame(10, $activeIteratorProvider->getLimit());
+    }
+
+    public function testGetOffset(): void
+    {
+        $userQuery = new ActiveQuery(User::class, $this->db);
+        $activeIteratorProvider = (new ActiveIteratorProvider($userQuery))->withOffset(10);
+
+        $this->assertSame(10, $activeIteratorProvider->getOffset());
+    }
+
     public function testImmutable(): void
     {
         $userQuery = new ActiveQuery(User::class, $this->db);
