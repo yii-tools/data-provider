@@ -57,6 +57,15 @@ final class OffsetPaginatorTest extends TestCase
         $this->assertSame(1, $offsetPaginator->getTotalPages());
     }
 
+    public function testImmutable(): void
+    {
+        $arrayIteratorProvider = new ArrayIteratorProvider($this->data);
+        $offsetPaginator = new OffsetPaginator($arrayIteratorProvider);
+
+        $this->assertNotSame($offsetPaginator, $offsetPaginator->withLimit(1));
+        $this->assertNotSame($offsetPaginator, $offsetPaginator->withOffset(1));
+    }
+
     public function testWithLimit(): void
     {
         $arrayIteratorProvider = new ArrayIteratorProvider($this->data);

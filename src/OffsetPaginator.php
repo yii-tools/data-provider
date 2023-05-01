@@ -62,9 +62,7 @@ final class OffsetPaginator implements Countable, IteratorAggregate
      */
     public function getTotalPages(): int
     {
-        $totalCount = $this->iteratorProvider->withLimit(-1)->withOffset(-1)->count();
-
-        return (int) ceil($totalCount / $this->iteratorProvider->getLimit());
+        return (int) ceil($this->iteratorProvider->count() / $this->iteratorProvider->getLimit());
     }
 
     /**
