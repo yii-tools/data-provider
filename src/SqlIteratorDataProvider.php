@@ -8,6 +8,8 @@ use ArrayIterator;
 use Countable;
 use IteratorAggregate;
 use Traversable;
+use Yii\Interface\LimitInterface;
+use Yii\Interface\OffsetInterface;
 use Yiisoft\Db\Connection\ConnectionInterface;
 
 use function count;
@@ -17,7 +19,7 @@ use function count;
  *
  * @implements IteratorAggregate<int, array>
  */
-final class SqlIteratorDataProvider implements IteratorAggregate, Countable
+final class SqlIteratorDataProvider implements IteratorAggregate, Countable, LimitInterface, OffsetInterface
 {
     private int $limit = 0;
     private int $offset = 0;

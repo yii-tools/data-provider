@@ -8,6 +8,8 @@ use ArrayIterator;
 use Countable;
 use IteratorAggregate;
 use Traversable;
+use Yii\Interface\LimitInterface;
+use Yii\Interface\OffsetInterface;
 
 use function array_slice;
 use function count;
@@ -17,7 +19,7 @@ use function count;
  *
  * @implements IteratorAggregate<int, array>
  */
-final class ArrayIteratorProvider implements IteratorAggregate, Countable
+final class ArrayIteratorProvider implements IteratorAggregate, Countable, LimitInterface, OffsetInterface
 {
     private int|null $limit = 0;
     private int $offset = 0;

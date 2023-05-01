@@ -8,6 +8,8 @@ use ArrayIterator;
 use Countable;
 use IteratorAggregate;
 use Traversable;
+use Yii\Interface\LimitInterface;
+use Yii\Interface\OffsetInterface;
 use Yiisoft\ActiveRecord\ActiveQueryInterface;
 
 /**
@@ -15,7 +17,7 @@ use Yiisoft\ActiveRecord\ActiveQueryInterface;
  *
  * @implements IteratorAggregate<int, array>
  */
-final class ActiveIteratorProvider implements IteratorAggregate, Countable
+final class ActiveIteratorProvider implements IteratorAggregate, Countable, LimitInterface, OffsetInterface
 {
     private int $limit = 0;
     private int $offset = 0;
