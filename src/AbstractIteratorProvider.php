@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Yii\DataProvider;
 
 use ArrayIterator;
-use InvalidArgumentException;
 use Traversable;
 
 abstract class AbstractIteratorProvider implements IteratorProviderInterface
