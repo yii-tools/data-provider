@@ -118,6 +118,34 @@ abstract class AbstractActiveIteratorDataProviderTest extends TestCase
         );
     }
 
+    public function testWithLimitWithNegative(): void
+    {
+        $userQuery = new ActiveQuery(User::class, $this->db);
+        $activeIteratorProvider = (new ActiveIteratorProvider($userQuery))->withLimit(-1)->withOffset(1)->read();
+
+        $this->assertCount(3, $activeIteratorProvider);
+        $this->assertSame(
+            ['id' => 1, 'username' => 'admin', 'email' => 'admin@example.com'],
+            $activeIteratorProvider[0]->getAttributes(),
+        );
+        $this->assertSame(
+            ['id' => 2, 'username' => 'user', 'email' => 'user@example.com'],
+            $activeIteratorProvider[1]->getAttributes(),
+        );
+        $this->assertSame(
+            ['id' => 3, 'username' => 'guest', 'email' => 'guest@example.com'],
+            $activeIteratorProvider[2]->getAttributes(),
+        );
+    }
+
+    public function testWithLimitWithZero(): void
+    {
+        $userQuery = new ActiveQuery(User::class, $this->db);
+        $activeIteratorProvider = (new ActiveIteratorProvider($userQuery))->withLimit(0)->withOffset(1)->read();
+
+        $this->assertCount(0, $activeIteratorProvider);
+    }
+
     public function testWithOffset(): void
     {
         $userQuery = new ActiveQuery(User::class, $this->db);
