@@ -6,10 +6,9 @@ namespace Yii\DataProvider\Tests\DataProvider;
 
 use Yii\DataProvider\SQLIteratorDataDataProvider;
 use Yii\DataProvider\Tests\Base\AbstractIteratorDataProviderTest;
-use Yii\DataProvider\Tests\Support\ActiveRecord\User;
 use Yii\DataProvider\Tests\Support\Helper\SqliteConnection;
 
-final class SQLIteratorProviderTest extends AbstractIteratorDataProviderTest
+final class SqlIteratorProviderTest extends AbstractIteratorDataProviderTest
 {
     protected function setUp(): void
     {
