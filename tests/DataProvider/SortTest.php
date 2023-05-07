@@ -88,6 +88,16 @@ final class SortTest extends TestCase
 
         $this->assertCount(1, $orders);
         $this->assertSame(SORT_ASC, $orders['age']);
+
+        $this->sort->multiSort(true);
+        $this->sort->params(['sort' => '-age,name']);
+
+        $orders = $this->sort->getOrders(true);
+
+        $this->assertCount(3, $orders);
+        $this->assertSame(SORT_DESC, $orders['age']);
+        $this->assertSame(SORT_ASC, $orders['first_name']);
+        $this->assertSame(SORT_ASC, $orders['last_name']);
     }
 
     /**

@@ -124,10 +124,7 @@ final class Sort
             if (!is_array($field)) {
                 $this->fields[$field] = ['asc' => [$field => SORT_ASC], 'desc' => [$field => SORT_DESC]];
             } else {
-                $this->fields[$name] = array_merge(
-                    ['asc' => [$name => SORT_ASC], 'desc' => [$name => SORT_DESC]],
-                    $field,
-                );
+                $this->fields[$name] = $field;
             }
         }
 
@@ -186,57 +183,54 @@ final class Sort
     /**
      * Returns the currently requested sort information.
      *
-     * @param bool $recalculate Whether to recalculate the sort directions.
+     * @param bool $value Whether to recalculate the sort directions.
      *
      * @return array Sort directions indexed by field names.
      * Sort direction can be either `SORT_ASC` for ascending order or `SORT_DESC` for descending order.
      */
-    public function getFieldOrders(bool $recalculate = false): array
+    public function getFieldOrders(bool $value = false): array
     {
-        if ($this->fieldOrders === null || $recalculate) {
+        if (!$value && $this->fieldOrders !== null) {
+            return $this->fieldOrders;
+        }
+
+        if (isset($this->params[$this->sortParam])) {
             $this->fieldOrders = [];
 
-            if (isset($this->params[$this->sortParam])) {
-                $sortParam = $this->parseSortParam((string) $this->params[$this->sortParam]);
-                /** @var array<array-key,string> $sortParam */
-                foreach ($sortParam as $field) {
-                    $descending = false;
+            $sortParam = $this->parseSortParam((string) $this->params[$this->sortParam]);
+            /** @var array<array-key,string> $sortParam */
+            foreach ($sortParam as $field) {
+                $descending = strncmp($field, '-', 1) === 0;
+                $field = $descending ? substr($field, 1) : $field;
 
-                    if (strncmp($field, '-', 1) === 0) {
-                        $descending = true;
-                        $field = substr($field, 1);
-                    }
+                if ($this->hasField($field)) {
+                    $this->fieldOrders[$field] = $descending ? SORT_DESC : SORT_ASC;
 
-                    if ($this->hasField($field)) {
-                        $this->fieldOrders[$field] = $descending ? SORT_DESC : SORT_ASC;
-
-                        if ($this->multiSort === false) {
-                            return $this->fieldOrders;
-                        }
+                    if (!$this->multiSort) {
+                        break;
                     }
                 }
             }
-
-            if (empty($this->fieldOrders) && !empty($this->defaultFieldOrder)) {
-                $this->fieldOrders = $this->defaultFieldOrder;
-            }
+        } else {
+            $this->fieldOrders = $this->defaultFieldOrder;
         }
 
         return $this->fieldOrders;
     }
 
+
     /**
      * Returns the columns and their corresponding sort directions.
      *
-     * @param bool $recalculate whether to recalculate the sort directions.
+     * @param bool $value whether to recalculate the sort directions. Defaults to `false`.
      *
      * @return array The columns (`keys`) and their corresponding sort directions (`values`).
      * This can be passed to construct a DB query.
      */
-    public function getOrders(bool $recalculate = false): array
+    public function getOrders(bool $value = false): array
     {
         $fields = [];
-        $fieldOrders = $this->getFieldOrders($recalculate);
+        $fieldOrders = $this->getFieldOrders($value);
 
         /** @psalm-var array<string,int> $fieldOrders */
         foreach ($fieldOrders as $field => $direction) {
