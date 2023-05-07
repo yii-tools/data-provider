@@ -15,7 +15,7 @@ For install this package, you need [composer](https://getcomposer.org/).
 ## Install
 
 ```shell
-composer require yii-tools/awesome-component
+composer require yii-tools/data-provider
 ```
 
 ## Usage
@@ -54,18 +54,31 @@ $arrayIteratorDataProvider = new ArrayIteratorDataProvider(
 );
 ```
 
-### SqlIteratorDataProvider
+### QueryIteratorDataProvider
 
 ```php
 <?php
 
 declare(strict_types=1);
 
-use Yii\DataProvider\SqlIteratorDataProvider;
+use Yii\DataProvider\QueryIteratorDataProvider;
+
+/** @var ConnectionInterface $db */
+$queryIteratorDataProvider = new QueryIteratorDataProvider((new Query($db))->select('*')->from('{{%user}}'));
+```
+
+### SQLIteratorDataProvider
+
+```php
+<?php
+
+declare(strict_types=1);
+
+use Yii\DataProvider\SQLIteratorDataProvider;
 use Yiisoft\Db\Connection\ConnectionInterface;
 
 /** @var ConnectionInterface $db */
-$sqlIteratorDataProvider = new SqlIteratorDataProvider($db, 'SELECT * FROM {{%user}}');
+$sqlIteratorDataProvider = new SQLIteratorDataProvider($db, 'SELECT * FROM {{%user}}');
 ```
 
 ## Testing

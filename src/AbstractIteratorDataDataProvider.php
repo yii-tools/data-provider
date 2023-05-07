@@ -7,7 +7,7 @@ namespace Yii\DataProvider;
 use ArrayIterator;
 use Traversable;
 
-abstract class AbstractIteratorProvider implements IteratorProviderInterface
+abstract class AbstractIteratorDataDataProvider implements IteratorDataProviderInterface
 {
     protected int $limit = self::DEFAULT_LIMIT;
     protected int $offset = self::DEFAULT_OFFSET;

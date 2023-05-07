@@ -9,7 +9,7 @@ use Yiisoft\ActiveRecord\ActiveQueryInterface;
 /**
  * Provides a way to iterate over the results of an Active Query with support for pagination.
  */
-final class ActiveIteratorProvider extends AbstractIteratorProvider
+final class ActiveIteratorDataProvider extends AbstractIteratorDataDataProvider
 {
     public function __construct(private ActiveQueryInterface $activeQuery)
     {

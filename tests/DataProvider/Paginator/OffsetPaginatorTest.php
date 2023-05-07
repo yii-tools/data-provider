@@ -6,7 +6,7 @@ namespace Yii\DataProvider\DataProvider\Paginator;
 
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
-use Yii\DataProvider\ArrayIteratorProvider;
+use Yii\DataProvider\ArrayIteratorDataProvider;
 use Yii\DataProvider\OffsetPaginator;
 
 final class OffsetPaginatorTest extends TestCase
@@ -19,7 +19,7 @@ final class OffsetPaginatorTest extends TestCase
 
     public function testCount(): void
     {
-        $arrayIteratorProvider = new ArrayIteratorProvider($this->data);
+        $arrayIteratorProvider = new ArrayIteratorDataProvider($this->data);
         $offsetPaginator = new OffsetPaginator($arrayIteratorProvider);
 
         $this->assertSame(3, $offsetPaginator->count());
@@ -27,7 +27,7 @@ final class OffsetPaginatorTest extends TestCase
 
     public function testGetIterator(): void
     {
-        $arrayIteratorProvider = new ArrayIteratorProvider($this->data);
+        $arrayIteratorProvider = new ArrayIteratorDataProvider($this->data);
         $offsetPaginator = new OffsetPaginator($arrayIteratorProvider);
 
         $this->assertSame($arrayIteratorProvider, $offsetPaginator->getIterator());
@@ -35,7 +35,7 @@ final class OffsetPaginatorTest extends TestCase
 
     public function testGetLimit(): void
     {
-        $arrayIteratorProvider = new ArrayIteratorProvider($this->data);
+        $arrayIteratorProvider = new ArrayIteratorDataProvider($this->data);
         $offsetPaginator = new OffsetPaginator($arrayIteratorProvider);
 
         $this->assertSame(10, $offsetPaginator->getLimit());
@@ -43,7 +43,7 @@ final class OffsetPaginatorTest extends TestCase
 
     public function testGetOffset(): void
     {
-        $arrayIteratorProvider = new ArrayIteratorProvider($this->data);
+        $arrayIteratorProvider = new ArrayIteratorDataProvider($this->data);
         $offsetPaginator = new OffsetPaginator($arrayIteratorProvider);
 
         $this->assertSame(0, $offsetPaginator->getOffset());
@@ -51,7 +51,7 @@ final class OffsetPaginatorTest extends TestCase
 
     public function testGetTotalPages(): void
     {
-        $arrayIteratorProvider = new ArrayIteratorProvider($this->data);
+        $arrayIteratorProvider = new ArrayIteratorDataProvider($this->data);
         $offsetPaginator = new OffsetPaginator($arrayIteratorProvider);
 
         $this->assertSame(1, $offsetPaginator->getTotalPages());
@@ -59,7 +59,7 @@ final class OffsetPaginatorTest extends TestCase
 
     public function testImmutable(): void
     {
-        $arrayIteratorProvider = new ArrayIteratorProvider($this->data);
+        $arrayIteratorProvider = new ArrayIteratorDataProvider($this->data);
         $offsetPaginator = new OffsetPaginator($arrayIteratorProvider);
 
         $this->assertNotSame($offsetPaginator, $offsetPaginator->withLimit(1));
@@ -68,7 +68,7 @@ final class OffsetPaginatorTest extends TestCase
 
     public function testWithLimit(): void
     {
-        $arrayIteratorProvider = new ArrayIteratorProvider($this->data);
+        $arrayIteratorProvider = new ArrayIteratorDataProvider($this->data);
         $offsetPaginator = new OffsetPaginator($arrayIteratorProvider);
         $newOffsetPaginator = $offsetPaginator->withLimit(5);
 
@@ -82,14 +82,14 @@ final class OffsetPaginatorTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Page size should be at least 1.');
 
-        $arrayIteratorProvider = new ArrayIteratorProvider($this->data);
+        $arrayIteratorProvider = new ArrayIteratorDataProvider($this->data);
         $offsetPaginator = new OffsetPaginator($arrayIteratorProvider);
         $offsetPaginator->withLimit(0);
     }
 
     public function testWithOffset(): void
     {
-        $arrayIteratorProvider = new ArrayIteratorProvider($this->data);
+        $arrayIteratorProvider = new ArrayIteratorDataProvider($this->data);
         $offsetPaginator = new OffsetPaginator($arrayIteratorProvider);
         $newOffsetPaginator = $offsetPaginator->withOffset(5);
 
@@ -103,7 +103,7 @@ final class OffsetPaginatorTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Current page should be at least 1.');
 
-        $arrayIteratorProvider = new ArrayIteratorProvider($this->data);
+        $arrayIteratorProvider = new ArrayIteratorDataProvider($this->data);
         $offsetPaginator = new OffsetPaginator($arrayIteratorProvider);
         $offsetPaginator->withOffset(0);
     }

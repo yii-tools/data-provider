@@ -11,7 +11,7 @@ use function count;
 /**
  * Provides a way to iterate over the results of a SQL query with support for pagination.
  */
-final class SqlIteratorDataProvider extends AbstractIteratorProvider
+final class SQLIteratorDataDataProvider extends AbstractIteratorDataDataProvider
 {
     public function __construct(private ConnectionInterface $db, private string $sql, private array $params = [])
     {
