@@ -84,7 +84,7 @@ final class SortTest extends TestCase
 
         $this->sort->multiSort(false);
 
-        $orders = $this->sort->getFieldOrders(true);
+        $orders = $this->sort->getOrders(true);
 
         $this->assertCount(1, $orders);
         $this->assertSame(SORT_ASC, $orders['age']);
@@ -151,15 +151,16 @@ final class SortTest extends TestCase
                     'desc' => '[[last_name]] DESC NULLS LAST',
                 ],
             ]
-        );
+        )->params(['sort' => '-name']);
 
-        $this->sort->params(['sort' => '-name']);
         $orders = $this->sort->getOrders();
+
         $this->assertCount(1, $orders);
         $this->assertSame('[[last_name]] DESC NULLS LAST', $orders[0]);
 
         $this->sort->params(['sort' => 'name']);
         $orders = $this->sort->getOrders(true);
+
         $this->assertCount(1, $orders);
         $this->assertSame('[[last_name]] ASC NULLS FIRST', $orders[0]);
     }

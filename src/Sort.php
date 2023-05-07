@@ -38,7 +38,7 @@ final class Sort
     private array $defaultFieldOrder = [];
     private array $fields = [];
     private array|null $fieldOrders = null;
-    private bool $multisort = false;
+    private bool $multiSort = false;
     private array $params = [];
     /** @psalm-var non-empty-string */
     private string $separator = ',';
@@ -159,7 +159,7 @@ final class Sort
             if ($this->hasField($field)) {
                 $this->fieldOrders[$field] = $order;
 
-                if ($this->isMultiSort() === false) {
+                if ($this->multiSort === false) {
                     return;
                 }
             }
@@ -210,7 +210,7 @@ final class Sort
                     if ($this->hasField($field)) {
                         $this->fieldOrders[$field] = $descending ? SORT_DESC : SORT_ASC;
 
-                        if ($this->isMultiSort() === false) {
+                        if ($this->multiSort === false) {
                             return $this->fieldOrders;
                         }
                     }
@@ -258,33 +258,13 @@ final class Sort
     }
 
     /**
-     * Returns a value indicating whether the sort definition supports sorting by the named field.
-     *
-     * @param string $value The field name.
-     *
-     * @return bool Whether the sort definition supports sorting by the named field.
-     */
-    public function hasField(string $value): bool
-    {
-        return isset($this->fields[$value]);
-    }
-
-    /**
-     * @return bool Whether the sorting can be applied to multiple attributes simultaneously.
-     */
-    public function isMultiSort(): bool
-    {
-        return $this->multisort;
-    }
-
-    /**
      * @param bool $value Whether the sorting can be applied to multiple attributes simultaneously.
      *
      * Defaults to `false`, which means each time the data can only be sorted by one field.
      */
     public function multiSort(bool $value = true): self
     {
-        $this->multisort = $value;
+        $this->multiSort = $value;
 
         return $this;
     }
@@ -329,6 +309,18 @@ final class Sort
         $this->sortParam = $value;
 
         return $this;
+    }
+
+    /**
+     * Returns a value indicating whether the sort definition supports sorting by the named field.
+     *
+     * @param string $value The field name.
+     *
+     * @return bool Whether the sort definition supports sorting by the named field.
+     */
+    private function hasField(string $value): bool
+    {
+        return isset($this->fields[$value]);
     }
 
     /**
