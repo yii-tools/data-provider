@@ -13,7 +13,7 @@ use Traversable;
  *
  * @extends IteratorAggregate<int, array>
  */
-interface IteratorProviderInterface extends Countable, IteratorAggregate
+interface IteratorDataProviderInterface extends Countable, IteratorAggregate
 {
     /**
      * The default page size.

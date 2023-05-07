@@ -22,7 +22,7 @@ use function ceil;
  */
 final class OffsetPaginator implements Countable, IteratorAggregate
 {
-    public function __construct(private IteratorProviderInterface $iteratorProvider)
+    public function __construct(private IteratorDataProviderInterface $iteratorProvider)
     {
     }
 

@@ -4,19 +4,21 @@ declare(strict_types=1);
 
 namespace Yii\DataProvider\Tests\DataProvider;
 
-use Yii\DataProvider\ActiveIteratorDataProvider;
+use Yii\DataProvider\QueryIteratorDataProvider;
 use Yii\DataProvider\Tests\Base\AbstractIteratorDataProviderTest;
 use Yii\DataProvider\Tests\Support\ActiveRecord\User;
 use Yii\DataProvider\Tests\Support\Helper\SqliteConnection;
-use Yiisoft\ActiveRecord\ActiveQuery;
+use Yiisoft\Db\Query\Query;
 
-final class ActiveIteratorProviderTest extends AbstractIteratorDataProviderTest
+final class QueryIteratorProviderTest extends AbstractIteratorDataProviderTest
 {
     protected function setUp(): void
     {
         $this->db = SqliteConnection::getConnection();
         $this->createSchema();
-        $this->iteratorProvider = new ActiveIteratorDataProvider(new ActiveQuery(User::class, $this->db));
+        $this->iteratorProvider = new QueryIteratorDataProvider(
+            (new Query($this->db))->select('*')->from(User::tableName()),
+        );
 
         parent::setUp();
     }

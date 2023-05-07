@@ -10,7 +10,7 @@ use function count;
 /**
  * Provides a way to iterate over an array with support for pagination.
  */
-final class ArrayIteratorProvider extends AbstractIteratorProvider
+final class ArrayIteratorDataProvider extends AbstractIteratorDataDataProvider
 {
     public function __construct(private array $data)
     {
