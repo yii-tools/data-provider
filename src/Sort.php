@@ -218,7 +218,6 @@ final class Sort
         return $this->fieldOrders;
     }
 
-
     /**
      * Returns the columns and their corresponding sort directions.
      *
