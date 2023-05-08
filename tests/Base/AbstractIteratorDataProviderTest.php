@@ -34,6 +34,11 @@ abstract class AbstractIteratorDataProviderTest extends TestCase
         $this->assertSame(0, $this->iteratorProvider->getOffset());
     }
 
+    public function testGetTotalPage(): void
+    {
+        $this->assertSame(1, $this->iteratorProvider->getTotalPages());
+    }
+
     public function testImmutable(): void
     {
         $this->assertNotSame($this->iteratorProvider, $this->iteratorProvider->withLimit(0));
