@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Yii\DataProvider;
 
-use function array_merge;
 use function explode;
 use function is_array;
 use function strncmp;
@@ -190,7 +189,7 @@ final class Sort
      */
     public function getFieldOrders(bool $value = false): array
     {
-        if (!$value && $this->fieldOrders !== null) {
+        if ($value === false && $this->fieldOrders !== null) {
             return $this->fieldOrders;
         }
 
@@ -266,7 +265,7 @@ final class Sort
      * @param array $value parameters (name => value) that should be used to obtain the current sort directions and to
      * create new sort URLs. If not set, `$_GET` will be used instead.
      *
-     * In order to add hash to all links use `array_merge($_GET, ['#' => 'my-hash'])`.
+     * In order to add hash to all links use `\array_merge($_GET, ['#' => 'my-hash'])`.
      *
      * The array element indexed by {@see sortParam} is considered to be the current sort directions.
      * If the element does not exist, the {@see defaultFieldOrder} will be used.
