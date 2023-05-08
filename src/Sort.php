@@ -225,10 +225,10 @@ final class Sort
      * @return array The columns (`keys`) and their corresponding sort directions (`values`).
      * This can be passed to construct a DB query.
      */
-    public function getOrders(bool $value = false): array
+    public function getOrders(): array
     {
         $fields = [];
-        $fieldOrders = $this->getFieldOrders($value);
+        $fieldOrders = $this->getFieldOrders(true);
 
         /** @psalm-var array<string,int> $fieldOrders */
         foreach ($fieldOrders as $field => $direction) {
