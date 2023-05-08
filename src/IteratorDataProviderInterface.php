@@ -56,6 +56,11 @@ interface IteratorDataProviderInterface extends Countable, IteratorAggregate
     public function getIterator(): Traversable;
 
     /**
+     * Returns the total number of pages.
+     */
+    public function getTotalPages(): int;
+
+    /**
      * Returns a portion of the data provider based on the current limit and offset.
      *
      * @return array The portion of the data provider based on the current limit and offset.
