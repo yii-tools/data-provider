@@ -4,8 +4,13 @@ declare(strict_types=1);
 
 namespace Yii\DataProvider;
 
+use InvalidArgumentException;
+
+use function array_merge;
 use function explode;
+use function implode;
 use function is_array;
+use function is_iterable;
 use function strncmp;
 use function substr;
 
@@ -250,6 +255,32 @@ final class Sort
         }
 
         return $columns;
+    }
+
+    public function getSortParams(string $column): array
+    {
+        if ($this->hasColumn($column) === false) {
+            throw new InvalidArgumentException("Unknown attribute: $column");
+        }
+
+        $directions = $this->getColumnOrders(true);
+
+        $direction = $directions[$column] === SORT_DESC ? SORT_ASC : SORT_DESC;
+        unset($directions[$column]);
+
+        $directions =  match ($this->multiSort) {
+            true => array_merge([$column => $direction], $directions),
+            default => [$column => $direction],
+        };
+
+        $sorts = [];
+
+        /** @var array<string, int> $directions */
+        foreach ($directions as $attribute => $direction) {
+            $sorts[] = $direction === SORT_DESC ? '-' . $attribute : $attribute;
+        }
+
+        return [$this->sortParam => implode($this->separator, $sorts)];
     }
 
     /**
