@@ -6,6 +6,7 @@ namespace Yii\DataProvider\Tests\Base;
 
 use PHPUnit\Framework\TestCase;
 use Yii\DataProvider\IteratorDataProviderInterface;
+use Yii\DataProvider\Sort;
 use Yii\DataProvider\Tests\Support\ActiveRecord\User;
 use Yiisoft\Db\Connection\ConnectionInterface;
 
@@ -13,6 +14,7 @@ abstract class AbstractIteratorDataProviderTest extends TestCase
 {
     protected ConnectionInterface $db;
     protected IteratorDataProviderInterface $iteratorProvider;
+    protected Sort $sort;
 
     public function testCount(): void
     {
@@ -72,6 +74,45 @@ abstract class AbstractIteratorDataProviderTest extends TestCase
         $this->assertEquals(
             ['id' => 1, 'username' => 'admin', 'email' => 'admin@example.com'],
             is_object($iteratorProvider[0]) ? $iteratorProvider[0]->getAttributes() : $iteratorProvider[0],
+        );
+    }
+
+    public function testSort(): void
+    {
+        // sort for id desc
+        $this->sort->columns(['id'])->params(['sort' => '-id'])->multiSort(true);
+        $iteratorProvider = $this->iteratorProvider->withLimit(5)->sortOrders($this->sort->getOrders())->read();
+
+        $this->assertCount(3, $iteratorProvider);
+        $this->assertEquals(
+            ['id' => 3, 'username' => 'guest', 'email' => 'guest@example.com'],
+            is_object($iteratorProvider[0]) ? $iteratorProvider[0]->getAttributes() : $iteratorProvider[0],
+        );
+        $this->assertEquals(
+            ['id' => 2, 'username' => 'user', 'email' => 'user@example.com'],
+            is_object($iteratorProvider[1]) ? $iteratorProvider[1]->getAttributes() : $iteratorProvider[1],
+        );
+        $this->assertEquals(
+            ['id' => 1, 'username' => 'admin', 'email' => 'admin@example.com'],
+            is_object($iteratorProvider[2]) ? $iteratorProvider[2]->getAttributes() : $iteratorProvider[2],
+        );
+
+        // sort email desc, id asc
+        $this->sort->columns(['id', 'email'])->params(['sort' => '-email, id'])->multiSort(true);
+        $iteratorProvider = $this->iteratorProvider->withLimit(5)->sortOrders($this->sort->getOrders())->read();
+
+        $this->assertCount(3, $iteratorProvider);
+        $this->assertEquals(
+            ['id' => 2, 'username' => 'user', 'email' => 'user@example.com'],
+            is_object($iteratorProvider[0]) ? $iteratorProvider[0]->getAttributes() : $iteratorProvider[0],
+        );
+        $this->assertEquals(
+            ['id' => 3, 'username' => 'guest', 'email' => 'guest@example.com'],
+            is_object($iteratorProvider[1]) ? $iteratorProvider[1]->getAttributes() : $iteratorProvider[1],
+        );
+        $this->assertEquals(
+            ['id' => 1, 'username' => 'admin', 'email' => 'admin@example.com'],
+            is_object($iteratorProvider[2]) ? $iteratorProvider[2]->getAttributes() : $iteratorProvider[2],
         );
     }
 

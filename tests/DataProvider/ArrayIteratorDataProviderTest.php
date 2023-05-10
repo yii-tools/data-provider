@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace Yii\DataProvider\Tests\DataProvider;
 
 use Yii\DataProvider\ArrayIteratorDataProvider;
+use Yii\DataProvider\Sort;
 use Yii\DataProvider\Tests\Base\AbstractIteratorDataProviderTest;
 
-final class ArrayIteratorProviderTest extends AbstractIteratorDataProviderTest
+final class ArrayIteratorDataProviderTest extends AbstractIteratorDataProviderTest
 {
     private array $data = [
         ['id' => 1, 'username' => 'admin', 'email' => 'admin@example.com'],
@@ -18,6 +19,7 @@ final class ArrayIteratorProviderTest extends AbstractIteratorDataProviderTest
     protected function setUp(): void
     {
         $this->iteratorProvider = new ArrayIteratorDataProvider($this->data);
+        $this->sort = new Sort();
 
         parent::setUp();
     }

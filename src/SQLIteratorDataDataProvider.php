@@ -13,6 +13,8 @@ use function count;
  */
 final class SQLIteratorDataDataProvider extends AbstractIteratorDataDataProvider
 {
+    private array $orders = [];
+
     public function __construct(private ConnectionInterface $db, private string $sql, private array $params = [])
     {
     }
@@ -24,7 +26,9 @@ final class SQLIteratorDataDataProvider extends AbstractIteratorDataDataProvider
 
     public function read(): array
     {
-        $sql = $this->db->getQueryBuilder()->buildOrderByAndLimit($this->sql, [], $this->limit, $this->offset);
+        $sql = $this->db
+            ->getQueryBuilder()
+            ->buildOrderByAndLimit($this->sql, $this->orders, $this->limit, $this->offset);
 
         return $this->db->createCommand($sql, $this->params)->queryAll();
     }
@@ -32,5 +36,12 @@ final class SQLIteratorDataDataProvider extends AbstractIteratorDataDataProvider
     public function readOne(): array
     {
         return $this->withLimit(1)->read();
+    }
+
+    public function sortOrders(array $orders): static
+    {
+        $this->orders = $orders;
+
+        return $this;
     }
 }

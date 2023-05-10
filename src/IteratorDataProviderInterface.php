@@ -75,6 +75,14 @@ interface IteratorDataProviderInterface extends Countable, IteratorAggregate
     public function readOne(): array;
 
     /**
+     * Sorts the data array by the given orders.
+     *
+     * @param array $orders An associative array where the keys represent the fields to sort by and the values represent
+     * the sorting direction.
+     */
+    public function sortOrders(array $orders): static;
+
+    /**
      * Returns a new instance specifying the number of items to be returned per page.
      *
      * @param int $value The number of items to be returned per page.
