@@ -29,4 +29,11 @@ final class ActiveIteratorDataProvider extends AbstractIteratorDataDataProvider
     {
         return $this->activeQuery->limit(1)->offset($this->offset)->all();
     }
+
+    public function sortOrders(array $orders): static
+    {
+        $this->activeQuery->orderBy($orders);
+
+        return $this;
+    }
 }
