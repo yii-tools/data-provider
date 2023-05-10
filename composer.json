@@ -19,6 +19,7 @@
         "phpunit/phpunit": "^10.0",
         "roave/infection-static-analysis-plugin": "^1.29",
         "vimeo/psalm": "^5.8",
+        "yiisoft/arrays": "^3.0",
         "yiisoft/cache": "^3.0",
         "yiisoft/db-sqlite": "^1.0"
     },
