@@ -268,7 +268,7 @@ final class Sort
         $direction = $directions[$column] === SORT_DESC ? SORT_ASC : SORT_DESC;
         unset($directions[$column]);
 
-        $directions =  match ($this->multiSort) {
+        $directions = match ($this->multiSort) {
             true => array_merge([$column => $direction], $directions),
             default => [$column => $direction],
         };
