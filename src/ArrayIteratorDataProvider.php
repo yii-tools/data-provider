@@ -16,6 +16,9 @@ use function count;
  */
 final class ArrayIteratorDataProvider extends AbstractIteratorDataDataProvider
 {
+    /**
+     * @psalm-param array<array-key, array<array-key, mixed>|object> $data
+     */
     public function __construct(private array $data)
     {
     }
