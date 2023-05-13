@@ -54,7 +54,7 @@ abstract class AbstractIteratorDataDataProvider implements IteratorDataProviderI
     {
         $new = clone $this;
 
-        $new->offset = match ($new->limit * ($value - 1) <= 0) {
+        $new->offset = match ($value <= 0) {
             true => self::DEFAULT_OFFSET,
             default => $new->limit * ($value - 1),
         };

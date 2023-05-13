@@ -265,7 +265,7 @@ final class Sort
 
         $directions = $this->getColumnOrders(true);
 
-        $direction = $directions[$column] === SORT_DESC ? SORT_ASC : SORT_DESC;
+        $direction = isset($directions[$column]) && $directions[$column] === SORT_DESC ? SORT_ASC : SORT_DESC;
         unset($directions[$column]);
 
         $directions = match ($this->multiSort) {
