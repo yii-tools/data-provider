@@ -53,12 +53,11 @@ abstract class AbstractIteratorDataDataProvider implements IteratorDataProviderI
     public function withOffset(int $value): static
     {
         $new = clone $this;
-        $new->offset = $value;
 
-        // validate offset
-        if ($new->limit * ($new->offset - 1) <= 0) {
-            $new->offset = self::DEFAULT_OFFSET;
-        }
+        $new->offset = match ($new->limit * ($value - 1) <= 0) {
+            true => self::DEFAULT_OFFSET,
+            default => $new->limit * ($value - 1),
+        };
 
         return $new;
     }
