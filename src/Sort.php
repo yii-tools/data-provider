@@ -205,7 +205,7 @@ final class Sort
                 }
             }
         } else {
-            $this->columnOrders = $this->defaultColumnOrder;
+            $this->setDefaultColumnOrders();
         }
 
         return $this->columnOrders;
@@ -403,5 +403,26 @@ final class Sort
     private function parseSortParam(string $param): array
     {
         return explode($this->separator, $param);
+    }
+
+    private function setDefaultColumnOrders(): void
+    {
+        if ($this->defaultColumnOrder !== []) {
+            $this->columnOrders = $this->defaultColumnOrder;
+            return;
+        }
+
+        $defaultColumnOrder = [];
+
+        foreach ($this->columns as $name => $definition) {
+            $defaultDirection = $definition['default'] ?? SORT_ASC;
+            $defaultColumnOrder[$name] = $defaultDirection;
+
+            if ($this->multiSort === false) {
+                break;
+            }
+        }
+
+        $this->columnOrders = $defaultColumnOrder;
     }
 }

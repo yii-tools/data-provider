@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Yii\DataProvider\Tests\DataProvider;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Yii\DataProvider\Sort;
 
@@ -96,6 +97,22 @@ final class SortTest extends TestCase
         $this->assertCount(2, $orders);
         $this->assertSame(SORT_ASC, $orders['age']);
         $this->assertSame(SORT_DESC, $orders['name']);
+
+        $this->sort->multiSort(false);
+
+        $orders = $this->sort->getColumnOrders(true);
+        $this->assertCount(1, $orders);
+        $this->assertSame(SORT_ASC, $orders['age']);
+    }
+
+    public function testGetColumnOrdersWithEmpty()
+    {
+        $this->sort->columns(['age', 'name'])->multiSort();
+
+        $orders = $this->sort->getColumnOrders();
+        $this->assertCount(2, $orders);
+        $this->assertSame(SORT_ASC, $orders['age']);
+        $this->assertSame(SORT_ASC, $orders['name']);
 
         $this->sort->multiSort(false);
 
@@ -197,7 +214,7 @@ final class SortTest extends TestCase
 
     public function testGetSortParamWithException(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Unknown attribute: unexistingAttribute');
 
         $this->sort->columns(
