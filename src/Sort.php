@@ -243,9 +243,10 @@ final class Sort
 
     /**
      * @param string $column The name of the column.
-     * @return array The sort parameter value for the specified column.
      *
      * @throws InvalidArgumentException if the specified column is unknown.
+     *
+     * @return array The sort parameter value for the specified column.
      */
     public function getSortParam(string $column): array
     {
