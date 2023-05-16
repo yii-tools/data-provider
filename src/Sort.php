@@ -288,6 +288,7 @@ final class Sort
         $sortParams = [];
         $columnOrders = $this->getColumnOrders(true);
 
+        /** @psalm-var array<string,int> $columnOrders */
         foreach ($columnOrders as $column => $direction) {
             $directions = $columnOrders;
             $direction = $direction === SORT_DESC ? SORT_ASC : SORT_DESC;
