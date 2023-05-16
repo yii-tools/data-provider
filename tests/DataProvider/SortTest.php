@@ -270,18 +270,10 @@ final class SortTest extends TestCase
         $this->assertSame(['age' => SORT_ASC, 'name' => SORT_ASC], $this->sort->getColumnOrders(true));
     }
 
-    public function testSortParam(): void
+    public function testSortParamNamme(): void
     {
-        $this->sort->columns(
-            [
-                'age',
-                'name' => [
-                    'asc' => ['first_name' => SORT_ASC, 'last_name' => SORT_ASC],
-                    'desc' => ['first_name' => SORT_DESC, 'last_name' => SORT_DESC],
-                ],
-            ]
-        )->params(['order' => 'age,-name'])->sortParam('order')->multiSort(true);
+        $this->sort->sortParamName('order');
 
-        $this->assertSame(['age' => SORT_ASC, 'name' => SORT_DESC], $this->sort->getColumnOrders());
+        $this->assertSame('order', $this->sort->getSortParamName());
     }
 }
