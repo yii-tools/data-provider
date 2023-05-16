@@ -418,10 +418,9 @@ final class Sort
          * @var array|int $definition
          */
         foreach ($this->columns as $name => $definition) {
-            $defaultDirection = isset($definition['default']) && is_int($definition['default'])
-                ? $definition['default']
-                : SORT_ASC;
-            $defaultColumnOrder[$name] = $defaultDirection;
+            if (is_array($definition) && isset($definition['asc'], $definition['desc'])) {
+                $defaultColumnOrder[$name] = SORT_ASC;
+            }
 
             if ($this->multiSort === false) {
                 break;
