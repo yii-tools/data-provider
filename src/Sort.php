@@ -15,7 +15,7 @@ use function strncmp;
 use function substr;
 
 /**
- * Sort represents information relevant to sorting.
+ * Represents information relevant to sorting.
  *
  * When data needs to be sorted according to one or several columns, we can use Sort to represent the sorting
  * information and generate appropriate hyperlinks that can lead to sort actions.
@@ -32,7 +32,7 @@ use function substr;
  *             'desc' => ['first_name' => SORT_DESC, 'last_name' => SORT_DESC],
  *         ],
  *     ],
- * )->params(['sort' => 'age,-name'])->multisort();
+ * )->params(['sort' => 'age,-name'])->multiSort();
  * ```
  *
  * In the above, we declare two {@see columns} that support sorting: `name` and `age`.
@@ -46,7 +46,7 @@ final class Sort
     private array $params = [];
     /** @psalm-var non-empty-string */
     private string $separator = ',';
-    private string $sortParam = 'sort';
+    private string $sortParamName = 'sort';
 
     /**
      * @param array $values List of columns that are allowed to be sorted.
@@ -59,8 +59,6 @@ final class Sort
      *     'name' => [
      *         'asc' => ['first_name' => SORT_ASC, 'last_name' => SORT_ASC],
      *         'desc' => ['first_name' => SORT_DESC, 'last_name' => SORT_DESC],
-     *         'default' => SORT_DESC,
-     *         'label' => 'Name',
      *     ],
      * ]
      * ```
@@ -74,8 +72,6 @@ final class Sort
      *         'asc' => ['age' => SORT_ASC],
      *         'desc' => ['age' => SORT_DESC],
      *     ],
-     *     'default' => SORT_ASC,
-     *     'label' => 'age',
      * ]
      * ```
      *
@@ -92,12 +88,6 @@ final class Sort
      * - The `asc` and `desc` elements specify how to sort by the column in ascending and descending orders,
      *   respectively. Their values represent the actual columns and the directions by which the data should be sorted
      *   by.
-     * - The `default` element specifies by which direction the column should be sorted if it is not currently sorted
-     *   (the default value is ascending order).
-     * - The `label` element specifies what label should be used to create a sort link.
-     *
-     * Note that if the Sort object is already created, you can only use the full format to configure every column.
-     * Each column must include these elements: `asc` and `desc`.
      */
     public function columns(array $values = []): self
     {
@@ -170,8 +160,6 @@ final class Sort
     }
 
     /**
-     * Returns the sort direction of the specified column in the current request.
-     *
      * @param string $vale The column name.
      *
      * @return int|null Sort direction of the column.
@@ -187,8 +175,6 @@ final class Sort
     }
 
     /**
-     * Returns the currently requested sort information.
-     *
      * @param bool $value Whether to recalculate the sort directions.
      *
      * @return array Sort directions indexed by column names.
@@ -200,13 +186,13 @@ final class Sort
             return $this->columnOrders;
         }
 
-        if (isset($this->params[$this->sortParam])) {
+        if (isset($this->params[$this->sortParamName])) {
             $this->columnOrders = [];
 
-            $sortParam = $this->parseSortParam((string) $this->params[$this->sortParam]);
+            $sortParamName = $this->parseSortParam((string) $this->params[$this->sortParamName]);
 
-            /** @var array<array-key,string> $sortParam */
-            foreach ($sortParam as $column) {
+            /** @var array<array-key,string> $sortParamName */
+            foreach ($sortParamName as $column) {
                 $descending = strncmp($column, '-', 1) === 0;
                 $column = $descending ? substr($column, 1) : $column;
 
@@ -226,8 +212,6 @@ final class Sort
     }
 
     /**
-     * Returns the columns and their corresponding sort directions.
-     *
      * @param bool $value whether to recalculate the sort directions. Defaults to `false`.
      *
      * @return array The columns (`keys`) and their corresponding sort directions (`values`).
@@ -257,7 +241,14 @@ final class Sort
         return $columns;
     }
 
-    public function getSortParams(string $column): array
+    /**
+     * @param string $column The name of the column.
+     *
+     * @throws InvalidArgumentException if the specified column is unknown.
+     *
+     * @return array The sort parameter value for the specified column.
+     */
+    public function getSortParam(string $column): array
     {
         if ($this->hasColumn($column) === false) {
             throw new InvalidArgumentException("Unknown attribute: $column");
@@ -280,7 +271,48 @@ final class Sort
             $sorts[] = $direction === SORT_DESC ? '-' . $attribute : $attribute;
         }
 
-        return [$this->sortParam => implode($this->separator, $sorts)];
+        return [$this->sortParamName => implode($this->separator, $sorts)];
+    }
+
+    /**
+     * Returns an array of sort parameter values for all columns.
+     *
+     * @return array An array of sort parameter values for all columns.
+     */
+    public function getSortParams(): array
+    {
+        $sortParams = [];
+        $columnOrders = $this->getColumnOrders(true);
+
+        /** @psalm-var array<string,int> $columnOrders */
+        foreach ($columnOrders as $column => $direction) {
+            $directions = $columnOrders;
+            $direction = $direction === SORT_DESC ? SORT_ASC : SORT_DESC;
+            unset($directions[$column]);
+
+            $directions = match ($this->multiSort) {
+                true => array_merge([$column => $direction], $directions),
+                default => [$column => $direction],
+            };
+
+            $sorts = [];
+
+            foreach ($directions as $attribute => $direction) {
+                $sorts[] = $direction === SORT_DESC ? '-' . $attribute : $attribute;
+            }
+
+            $sortParams[$column][$this->sortParamName] = implode($this->separator, $sorts);
+        }
+
+        return $sortParams;
+    }
+
+    /**
+     * @return string The parameter name for specifying sort information in a URL.
+     */
+    public function getSortParamName(): string
+    {
+        return $this->sortParamName;
     }
 
     /**
@@ -301,10 +333,10 @@ final class Sort
      *
      * In order to add hash to all links use `\array_merge($_GET, ['#' => 'my-hash'])`.
      *
-     * The array element indexed by {@see sortParam} is considered to be the current sort directions.
+     * The array element indexed by {@see sortParamName} is considered to be the current sort directions.
      * If the element does not exist, the {@see defaultColumnOrder} will be used.
      *
-     * @see sortParam
+     * @see sortParamName
      * @see defaultColumnOrder
      */
     public function params(array $value): self
@@ -330,9 +362,9 @@ final class Sort
      *
      * @see params
      */
-    public function sortParam(string $value): self
+    public function sortParamName(string $value): self
     {
-        $this->sortParam = $value;
+        $this->sortParamName = $value;
 
         return $this;
     }
@@ -350,7 +382,7 @@ final class Sort
     }
 
     /**
-     * Parses the value of {@see sortParam} into an array of sort column.
+     * Parses the value of {@see sortParamName} into an array of sort column.
      *
      * The format must be the column name only for ascending or the column name prefixed with `-` for descending.
      *
@@ -364,7 +396,7 @@ final class Sort
      * ]
      * ```
      *
-     * @param string $param the value of the {@see sortParam}.
+     * @param string $param the value of the {@see sortParamName}.
      *
      * @return array The valid sort attributes.
      */

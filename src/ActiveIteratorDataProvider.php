@@ -7,7 +7,7 @@ namespace Yii\DataProvider;
 use Yiisoft\ActiveRecord\ActiveQueryInterface;
 
 /**
- * Provides a way to iterate over the results of an Active Query with support for pagination.
+ * Provides a way to iterate over the results of an active query with support for pagination.
  */
 final class ActiveIteratorDataProvider extends AbstractIteratorDataDataProvider
 {

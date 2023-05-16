@@ -9,6 +9,10 @@ use Traversable;
 
 use function ceil;
 
+/**
+ * The basic implementation of the {@see teratorDataProviderInterface} and can be used as a base class for data
+ * providers that retrieve data from an array or an iterator object.
+ */
 abstract class AbstractIteratorDataDataProvider implements IteratorDataProviderInterface
 {
     protected int $limit = self::DEFAULT_LIMIT;
@@ -39,7 +43,6 @@ abstract class AbstractIteratorDataDataProvider implements IteratorDataProviderI
 
     public function withLimit(int $value): static
     {
-        // validate limit
         if ($value < 0) {
             $value = self::DEFAULT_LIMIT;
         }

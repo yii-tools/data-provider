@@ -6,6 +6,9 @@ namespace Yii\DataProvider;
 
 use Yiisoft\Db\Query\QueryInterface;
 
+/**
+ * Provides a way to iterate over the results of {@see \Yiisoft\Db\Query\QueryInterface} in terms of data items.
+ */
 final class QueryIteratorDataProvider extends AbstractIteratorDataDataProvider
 {
     public function __construct(private QueryInterface $query)
