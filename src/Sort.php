@@ -10,6 +10,7 @@ use function array_merge;
 use function explode;
 use function implode;
 use function is_array;
+use function is_int;
 use function is_iterable;
 use function str_starts_with;
 use function substr;
