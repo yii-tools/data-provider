@@ -257,7 +257,7 @@ final class Sort
         return $columns;
     }
 
-    public function getSortParams(string $column): array
+    public function getSortParam(string $column): array
     {
         if ($this->hasColumn($column) === false) {
             throw new InvalidArgumentException("Unknown attribute: $column");
@@ -281,6 +281,33 @@ final class Sort
         }
 
         return [$this->sortParam => implode($this->separator, $sorts)];
+    }
+
+    public function getSortParams(): array
+    {
+        $sortParams = [];
+        $columnOrders = $this->getColumnOrders(true);
+
+        foreach ($columnOrders as $column => $direction) {
+            $directions = $columnOrders;
+            $direction = $direction === SORT_DESC ? SORT_ASC : SORT_DESC;
+            unset($directions[$column]);
+
+            $directions = match ($this->multiSort) {
+                true => array_merge([$column => $direction], $directions),
+                default => [$column => $direction],
+            };
+
+            $sorts = [];
+
+            foreach ($directions as $attribute => $direction) {
+                $sorts[] = $direction === SORT_DESC ? '-' . $attribute : $attribute;
+            }
+
+            $sortParams[$column][$this->sortParam] = implode($this->separator, $sorts);
+        }
+
+        return $sortParams;
     }
 
     /**

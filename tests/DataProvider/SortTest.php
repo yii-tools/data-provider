@@ -165,6 +165,50 @@ final class SortTest extends TestCase
         $this->assertSame(SORT_DESC, $orders['age']);
     }
 
+    public function testGetSortParam(): void
+    {
+        $this->sort
+            ->columns(
+                [
+                    'age',
+                    'name' => [
+                        'asc' => ['first_name' => SORT_ASC, 'last_name' => SORT_ASC],
+                        'desc' => ['first_name' => SORT_DESC, 'last_name' => SORT_DESC],
+                    ],
+                ],
+            )
+            ->multiSort()
+            ->params(['sort' => 'age,-name']);
+
+        $this->assertSame(['sort' => '-age,-name'], $this->sort->getSortParam('age'));
+        $this->assertSame(['sort' => 'name,age'], $this->sort->getSortParam('name'));
+
+        $this->sort->multiSort(false);
+
+        $this->assertSame(['sort' => '-age'], $this->sort->getSortParam('age'));
+
+        $this->sort
+            ->defaultColumnOrder(['age' => SORT_DESC, 'name' => SORT_ASC])
+            ->multiSort()
+            ->params(['sort' => 'age,name']);
+
+        $this->assertSame(['sort' => '-age,name'], $this->sort->getSortParam('age'));
+    }
+
+    public function testGetSortParamWithException(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Unknown attribute: unexistingAttribute');
+
+        $this->sort->columns(
+            [
+                'age',
+            ]
+        )->params(['sort' => 'age,-name'])->multiSort();
+
+        $this->sort->getSortParam('unexistingAttribute');
+    }
+
     public function testGetSortParams(): void
     {
         $this->sort
@@ -180,33 +224,30 @@ final class SortTest extends TestCase
             ->multiSort()
             ->params(['sort' => 'age,-name']);
 
-        $this->assertSame(['sort' => '-age,-name'], $this->sort->getSortParams('age'));
-        $this->assertSame(['sort' => 'name,age'], $this->sort->getSortParams('name'));
+        $this->assertSame(
+            [
+                'age' => ['sort' => '-age,-name'],
+                'name' => ['sort' => 'name,age'],
+            ],
+            $this->sort->getSortParams(),
+        );
 
         $this->sort->multiSort(false);
 
-        $this->assertSame(['sort' => '-age'], $this->sort->getSortParams('age'));
+        $this->assertSame(['age' => ['sort' => '-age']], $this->sort->getSortParams());
 
         $this->sort
             ->defaultColumnOrder(['age' => SORT_DESC, 'name' => SORT_ASC])
             ->multiSort()
             ->params(['sort' => 'age,name']);
 
-        $this->assertSame(['sort' => '-age,name'], $this->sort->getSortParams('age'));
-    }
-
-    public function testGetSortParamsWithException(): void
-    {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Unknown attribute: unexistingAttribute');
-
-        $this->sort->columns(
+        $this->assertSame(
             [
-                'age',
-            ]
-        )->params(['sort' => 'age,-name'])->multiSort();
-
-        $this->sort->getSortParams('unexistingAttribute');
+                'age' => ['sort' => '-age,name'],
+                'name' => ['sort' => '-name,age'],
+            ],
+            $this->sort->getSortParams(),
+        );
     }
 
     public function testSeparator(): void
