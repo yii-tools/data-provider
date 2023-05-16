@@ -61,9 +61,9 @@ interface IteratorDataProviderInterface extends Countable, IteratorAggregate
     public function getTotalPages(): int;
 
     /**
-     * Returns a portion of the data provider based on the current limit and offset.
+     * Returns a part of the data provider based on the current limit and offset.
      *
-     * @return array The portion of the data provider based on the current limit and offset.
+     * @return array The part of the data provider based on the current limit and offset.
      */
     public function read(): array;
 
@@ -80,7 +80,7 @@ interface IteratorDataProviderInterface extends Countable, IteratorAggregate
      * @param array $orders An associative array where the keys represent the fields to sort by and the values represent
      * the sorting direction.
      */
-    public function sortOrders(array $orders): static;
+    public function sortOrders(array $orders): self;
 
     /**
      * Returns a new instance specifying the number of items to be returned per page.

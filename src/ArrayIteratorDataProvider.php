@@ -16,9 +16,7 @@ use function count;
  */
 final class ArrayIteratorDataProvider extends AbstractIteratorDataDataProvider
 {
-    /**
-     * @psalm-param array<array-key, array<array-key, mixed>|object> $data
-     */
+    /** @psalm-param array<array-key, array|object> $data */
     public function __construct(private array $data)
     {
     }
@@ -38,12 +36,12 @@ final class ArrayIteratorDataProvider extends AbstractIteratorDataDataProvider
         return array_slice($this->data, $this->offset, 1);
     }
 
-    public function sortOrders(array $orders): static
+    public function sortOrders(array $orders): self
     {
-        /** @psalm-var array<array-key, string> */
+        /** @psalm-var array<array-key, string> $keys */
         $keys = array_keys($orders);
 
-        /** @psalm-var array<array-key, int> */
+        /** @psalm-var array<array-key, int> $direction */
         $direction = array_values($orders);
 
         if ($orders !== []) {

@@ -8,8 +8,12 @@ use Yii\DataProvider\ArrayIteratorDataProvider;
 use Yii\DataProvider\Sort;
 use Yii\DataProvider\Tests\Base\AbstractIteratorDataProviderTest;
 
+/**
+ * @psalm-suppress PropertyNotSetInConstructor
+ */
 final class ArrayIteratorDataProviderTest extends AbstractIteratorDataProviderTest
 {
+    /** @psalm-var array<array-key, array|object> */
     private array $data = [
         ['id' => 1, 'username' => 'admin', 'email' => 'admin@example.com'],
         ['id' => 2, 'username' => 'user', 'email' => 'user@example.com'],
