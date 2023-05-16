@@ -5,10 +5,15 @@ declare(strict_types=1);
 namespace Yii\DataProvider\Tests\Base;
 
 use PHPUnit\Framework\TestCase;
+use Throwable;
 use Yii\DataProvider\IteratorDataProviderInterface;
 use Yii\DataProvider\Sort;
 use Yii\DataProvider\Tests\Support\ActiveRecord\User;
 use Yiisoft\Db\Connection\ConnectionInterface;
+use Yiisoft\Db\Exception\Exception;
+use Yiisoft\Db\Exception\InvalidArgumentException;
+use Yiisoft\Db\Exception\InvalidConfigException;
+use Yiisoft\Db\Exception\NotSupportedException;
 
 abstract class AbstractIteratorDataProviderTest extends TestCase
 {
@@ -80,7 +85,7 @@ abstract class AbstractIteratorDataProviderTest extends TestCase
     public function testSort(): void
     {
         // sort for id desc
-        $this->sort->columns(['id'])->params(['sort' => '-id'])->multiSort(true);
+        $this->sort->columns(['id'])->params(['sort' => '-id'])->multiSort();
         $iteratorProvider = $this->iteratorProvider->withLimit(5)->sortOrders($this->sort->getOrders())->read();
 
         $this->assertCount(3, $iteratorProvider);
@@ -98,7 +103,7 @@ abstract class AbstractIteratorDataProviderTest extends TestCase
         );
 
         // sort email desc, id asc
-        $this->sort->columns(['id', 'email'])->params(['sort' => '-email, id'])->multiSort(true);
+        $this->sort->columns(['id', 'email'])->params(['sort' => '-email, id'])->multiSort();
         $iteratorProvider = $this->iteratorProvider->withLimit(5)->sortOrders($this->sort->getOrders())->read();
 
         $this->assertCount(3, $iteratorProvider);
@@ -195,6 +200,13 @@ abstract class AbstractIteratorDataProviderTest extends TestCase
         );
     }
 
+    /**
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws InvalidConfigException
+     * @throws NotSupportedException
+     * @throws Throwable
+     */
     protected function createSchema(): void
     {
         $command = $this->db->createCommand();
@@ -229,6 +241,11 @@ abstract class AbstractIteratorDataProviderTest extends TestCase
             ->execute();
     }
 
+    /**
+     * @throws Exception
+     * @throws InvalidConfigException
+     * @throws Throwable
+     */
     protected function dropSchema(): void
     {
         $this->db->createCommand()->dropTable(User::tableName())->execute();

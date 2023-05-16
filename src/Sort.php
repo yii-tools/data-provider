@@ -11,7 +11,7 @@ use function explode;
 use function implode;
 use function is_array;
 use function is_iterable;
-use function strncmp;
+use function str_starts_with;
 use function substr;
 
 /**
@@ -20,7 +20,7 @@ use function substr;
  * When data needs to be sorted according to one or several columns, we can use Sort to represent the sorting
  * information and generate appropriate hyperlinks that can lead to sort actions.
  *
- * A typical usage example is as follows,
+ * A typical usage example is as follows.
  *
  * ```php
  * $sort = new Sort();
@@ -64,7 +64,7 @@ final class Sort
      * ```
      *
      * In the above, two columns are declared: `age` and `name`.
-     * The `age` column is a simple column which is equivalent to the following:
+     * The `age` column is a simple column which is equal to the following:
      *
      * ```php
      * [
@@ -91,7 +91,7 @@ final class Sort
      */
     public function columns(array $values = []): self
     {
-        /** @var array<string,array|string> $values */
+        /** @psalm-var array<string,array|string> $values */
         foreach ($values as $name => $column) {
             if (!is_array($column)) {
                 $this->columns[$column] = ['asc' => [$column => SORT_ASC], 'desc' => [$column => SORT_DESC]];
@@ -109,7 +109,7 @@ final class Sort
      * @param array $values Sort directions indexed by column names.
      * Sort direction can be either `SORT_ASC` for ascending order or `SORT_DESC` for descending order.
      * @param bool $validate Whether to validate given column orders against {@see columns}.
-     * If validation is enabled incorrect entries will be removed.
+     * If validation is enabled, wrong entries will be removed.
      *
      * @see multiSort
      *
@@ -137,7 +137,7 @@ final class Sort
     }
 
     /**
-     * @param array $values The order that should be used when the current request does not specify any order.
+     * @param array $values The order that should be used when the current request doesn't specify any order.
      *
      * The array keys are column names and the array values are the corresponding sort directions.
      *
@@ -160,15 +160,15 @@ final class Sort
     }
 
     /**
-     * @param string $vale The column name.
+     * @param string $value The column name.
      *
      * @return int|null Sort direction of the column.
      * Can be either `SORT_ASC` for ascending order or `SORT_DESC` for descending order.
-     * `null` is returned if the column is invalid or does not need to be sorted.
+     * `Null` is returned if the column is invalid or doesn't need to be sorted.
      */
     public function getColumnOrder(string $value): int|null
     {
-        /** @var array<array-key,int> */
+        /** @psalm-var array<array-key,int> $orders */
         $orders = $this->getColumnOrders();
 
         return $orders[$value] ?? null;
@@ -191,9 +191,9 @@ final class Sort
 
             $sortParamName = $this->parseSortParam((string) $this->params[$this->sortParamName]);
 
-            /** @var array<array-key,string> $sortParamName */
+            /** @psalm-var array<array-key,string> $sortParamName */
             foreach ($sortParamName as $column) {
-                $descending = strncmp($column, '-', 1) === 0;
+                $descending = str_starts_with($column, '-');
                 $column = $descending ? substr($column, 1) : $column;
 
                 if ($this->hasColumn($column)) {
@@ -208,12 +208,10 @@ final class Sort
             $this->setDefaultColumnOrders();
         }
 
-        return $this->columnOrders;
+        return $this->columnOrders ?? [];
     }
 
     /**
-     * @param bool $value whether to recalculate the sort directions. Defaults to `false`.
-     *
      * @return array The columns (`keys`) and their corresponding sort directions (`values`).
      * This can be passed to construct a DB query.
      */
@@ -224,11 +222,11 @@ final class Sort
 
         /** @psalm-var array<string,int> $columnOrders */
         foreach ($columnOrders as $column => $direction) {
-            /** @var array */
+            /** @var array $definition */
             $definition = $this->hasColumn($column) ? $this->columns[$column] : [];
-            /** @var array */
+            /** @var array $values */
             $values = $definition[$direction === SORT_ASC ? 'asc' : 'desc'];
-            /** @var array<string,int>|string $values */
+            /** @psalm-var array<string,int>|string $values */
             if (is_iterable($values)) {
                 foreach ($values as $name => $dir) {
                     $columns[$name] = $dir;
@@ -266,7 +264,7 @@ final class Sort
 
         $sorts = [];
 
-        /** @var array<string, int> $directions */
+        /** @psalm-var array<string, int> $directions */
         foreach ($directions as $attribute => $direction) {
             $sorts[] = $direction === SORT_DESC ? '-' . $attribute : $attribute;
         }
@@ -297,8 +295,8 @@ final class Sort
 
             $sorts = [];
 
-            foreach ($directions as $attribute => $direction) {
-                $sorts[] = $direction === SORT_DESC ? '-' . $attribute : $attribute;
+            foreach ($directions as $attribute => $dir) {
+                $sorts[] = $dir === SORT_DESC ? '-' . $attribute : $attribute;
             }
 
             $sortParams[$column][$this->sortParamName] = implode($this->separator, $sorts);
@@ -316,7 +314,7 @@ final class Sort
     }
 
     /**
-     * @param bool $value Whether the sorting can be applied to multiple attributes simultaneously.
+     * @param bool $value Whether the sorting can be applied to many attributes simultaneously.
      *
      * Defaults to `false`, which means each time the data can only be sorted by one column.
      */
@@ -331,10 +329,10 @@ final class Sort
      * @param array $value parameters (name => value) that should be used to obtain the current sort directions and to
      * create new sort URLs. If not set, `$_GET` will be used instead.
      *
-     * In order to add hash to all links use `\array_merge($_GET, ['#' => 'my-hash'])`.
+     * To add hash to all links, use `array_merge($_GET, ['#' => 'my-hash'])`.
      *
      * The array element indexed by {@see sortParamName} is considered to be the current sort directions.
-     * If the element does not exist, the {@see defaultColumnOrder} will be used.
+     * If the element doesn't exist, the {@see defaultColumnOrder} will be used.
      *
      * @see sortParamName
      * @see defaultColumnOrder
@@ -386,7 +384,7 @@ final class Sort
      *
      * The format must be the column name only for ascending or the column name prefixed with `-` for descending.
      *
-     * For example the following return value will result in ascending sort by `category` and descending sort by
+     * For example, the following return value will result in ascending sort by `category` and descending sort by
      * `created_at`:
      *
      * ```php
@@ -414,8 +412,14 @@ final class Sort
 
         $defaultColumnOrder = [];
 
+        /**
+         * @var array-key $name
+         * @var array|int $definition
+         */
         foreach ($this->columns as $name => $definition) {
-            $defaultDirection = $definition['default'] ?? SORT_ASC;
+            $defaultDirection = isset($definition['default']) && is_int($definition['default'])
+                ? $definition['default']
+                : SORT_ASC;
             $defaultColumnOrder[$name] = $defaultDirection;
 
             if ($this->multiSort === false) {
