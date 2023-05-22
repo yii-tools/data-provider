@@ -114,7 +114,7 @@ final class Sort
     {
         $orders = $this->getColumnOrders();
 
-        return $orders[$value] ?? null;
+        return isset($orders[$value]) && is_int($orders[$value]) ? $orders[$value] : null;
     }
 
     /**
@@ -123,7 +123,7 @@ final class Sort
      */
     public function getColumnOrders(): array
     {
-        $columns = $this->columns ?? [];
+        $columns = $this->columns;
 
         if ($this->params === [] && $this->multiSort === false) {
             return array_slice($columns, 0, 1, true);
