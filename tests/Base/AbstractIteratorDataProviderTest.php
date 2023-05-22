@@ -85,8 +85,8 @@ abstract class AbstractIteratorDataProviderTest extends TestCase
     public function testSort(): void
     {
         // sort for id desc
-        $this->sort->columns(['id'])->params(['sort' => '-id'])->multiSort();
-        $iteratorProvider = $this->iteratorProvider->withLimit(5)->sortOrders($this->sort->getOrders())->read();
+        $sort = $this->sort->columns(['id'])->params(['sort' => '-id'])->multiSort();
+        $iteratorProvider = $this->iteratorProvider->withLimit(5)->sortOrders($sort->getOrders())->read();
 
         $this->assertCount(3, $iteratorProvider);
         $this->assertEquals(
@@ -103,8 +103,8 @@ abstract class AbstractIteratorDataProviderTest extends TestCase
         );
 
         // sort email desc, id asc
-        $this->sort->columns(['id', 'email'])->params(['sort' => '-email, id'])->multiSort();
-        $iteratorProvider = $this->iteratorProvider->withLimit(5)->sortOrders($this->sort->getOrders())->read();
+        $sort = $this->sort->columns(['id', 'email'])->params(['sort' => '-email, id'])->multiSort();
+        $iteratorProvider = $this->iteratorProvider->withLimit(5)->sortOrders($sort->getOrders())->read();
 
         $this->assertCount(3, $iteratorProvider);
         $this->assertEquals(
