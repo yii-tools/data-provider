@@ -29,17 +29,9 @@ final class SortTest extends TestCase
         unset($this->sort);
     }
 
-    public function testDefaultColumnOrder(): void
-    {
-        $this->sort->defaultColumnOrder(['age' => SORT_DESC, 'name' => SORT_ASC]);
-
-        $this->assertSame(SORT_DESC, $this->sort->getColumnOrder('age'));
-        $this->assertSame(SORT_ASC, $this->sort->getColumnOrder('name'));
-    }
-
     public function testColumnOrders(): void
     {
-        $this->sort->columns(
+        $sort = $this->sort->columns(
             [
                 'age',
                 'name' => [
@@ -49,27 +41,27 @@ final class SortTest extends TestCase
             ]
         )->params(['sort' => 'age,-name'])->multiSort();
 
-        $this->sort->columnOrders(['age' => SORT_DESC, 'name' => SORT_ASC]);
-        $this->assertSame(['age' => SORT_DESC, 'name' => SORT_ASC], $this->sort->getColumnOrders());
+        $sort = $sort->columnOrders(['age' => SORT_DESC, 'name' => SORT_ASC]);
+        $this->assertSame(['age' => SORT_DESC, 'name' => SORT_ASC], $sort->getColumnOrders());
 
-        $this->sort->multiSort(false);
+        $sort = $sort->multiSort(false);
 
-        $this->sort->columnOrders(['age' => SORT_DESC, 'name' => SORT_ASC]);
-        $this->assertSame(['age' => SORT_DESC], $this->sort->getColumnOrders());
+        $sort = $sort->columnOrders(['age' => SORT_DESC, 'name' => SORT_ASC]);
+        $this->assertSame(['age' => SORT_DESC], $sort->getColumnOrders());
 
-        $this->sort->columnOrders(['age' => SORT_DESC, 'name' => SORT_ASC], false);
-        $this->assertSame(['age' => SORT_DESC, 'name' => SORT_ASC], $this->sort->getColumnOrders());
+        $sort = $sort->columnOrders(['age' => SORT_DESC, 'name' => SORT_ASC], false);
+        $this->assertSame(['age' => SORT_DESC, 'name' => SORT_ASC], $sort->getColumnOrders());
 
-        $this->sort->columnOrders(['unexistingAttribute' => SORT_ASC]);
-        $this->assertSame([], $this->sort->getColumnOrders());
+        $sort = $sort->columnOrders(['unexistingAttribute' => SORT_ASC]);
+        $this->assertSame([], $sort->getColumnOrders());
 
-        $this->sort->columnOrders(['unexistingAttribute' => SORT_ASC], false);
-        $this->assertSame(['unexistingAttribute' => SORT_ASC], $this->sort->getColumnOrders());
+        $sort = $sort->columnOrders(['unexistingAttribute' => SORT_ASC], false);
+        $this->assertSame(['unexistingAttribute' => SORT_ASC], $sort->getColumnOrders());
     }
 
     public function testGetColumnOrder(): void
     {
-        $this->sort->columns(
+        $sort = $this->sort->columns(
             [
                 'age',
                 'name' => [
@@ -79,14 +71,14 @@ final class SortTest extends TestCase
             ]
         )->params(['sort' => 'age,-name'])->multiSort();
 
-        $this->assertSame(SORT_ASC, $this->sort->getColumnOrder('age'));
-        $this->assertSame(SORT_DESC, $this->sort->getColumnOrder('name'));
-        $this->assertNull($this->sort->getColumnOrder('xyz'));
+        $this->assertSame(SORT_ASC, $sort->getColumnOrder('age'));
+        $this->assertSame(SORT_DESC, $sort->getColumnOrder('name'));
+        $this->assertNull($sort->getColumnOrder('xyz'));
     }
 
     public function testGetColumnOrders(): void
     {
-        $this->sort->columns(
+        $sort = $this->sort->columns(
             [
                 'age',
                 'name' => [
@@ -96,32 +88,32 @@ final class SortTest extends TestCase
             ],
         )->params(['sort' => 'age,-name'])->multiSort();
 
-        $orders = $this->sort->getColumnOrders();
+        $orders = $sort->getColumnOrders();
         $this->assertCount(2, $orders);
         $this->assertSame(SORT_ASC, $orders['age']);
         $this->assertSame(SORT_DESC, $orders['name']);
 
-        $this->sort->multiSort(false);
+        $sort = $sort->multiSort(false);
 
-        $orders = $this->sort->getColumnOrders(true);
+        $orders = $sort->getColumnOrders(true);
         $this->assertCount(1, $orders);
         $this->assertSame(SORT_ASC, $orders['age']);
     }
 
     public function testGetColumnOrdersWithEmpty(): void
     {
-        $this->sort->columns(['age', 'name'])->multiSort();
+        $sort = $this->sort->columns(['age', 'name'])->multiSort();
 
-        $orders = $this->sort->getColumnOrders();
+        $orders = $sort->getColumnOrders();
         $this->assertCount(2, $orders);
-        $this->assertSame(SORT_ASC, $orders['age']);
-        $this->assertSame(SORT_ASC, $orders['name']);
+        $this->assertSame(['asc' => ['age' => SORT_ASC], 'desc' => ['age' => SORT_DESC]], $orders['age']);
+        $this->assertSame(['asc' => ['name' => SORT_ASC], 'desc' => ['name' => SORT_DESC]], $orders['name']);
 
-        $this->sort->multiSort(false);
+        $sort = $sort->multiSort(false);
 
-        $orders = $this->sort->getColumnOrders(true);
+        $orders = $sort->getColumnOrders(true);
         $this->assertCount(1, $orders);
-        $this->assertSame(SORT_ASC, $orders['age']);
+        $this->assertSame(['asc' => ['age' => SORT_ASC], 'desc' => ['age' => SORT_DESC]], $orders['age']);
     }
 
     /**
@@ -129,7 +121,7 @@ final class SortTest extends TestCase
      */
     public function testGetExpressionOrders(): void
     {
-        $this->sort->columns(
+        $sort = $this->sort->columns(
             [
                 'name' => [
                     'asc' => '[[last_name]] ASC NULLS FIRST',
@@ -138,13 +130,13 @@ final class SortTest extends TestCase
             ]
         )->params(['sort' => '-name']);
 
-        $orders = $this->sort->getOrders();
+        $orders = $sort->getOrders();
 
         $this->assertCount(1, $orders);
         $this->assertSame('[[last_name]] DESC NULLS LAST', $orders[0]);
 
-        $this->sort->params(['sort' => 'name']);
-        $orders = $this->sort->getOrders();
+        $sort = $sort->params(['sort' => 'name']);
+        $orders = $sort->getOrders();
 
         $this->assertCount(1, $orders);
         $this->assertSame('[[last_name]] ASC NULLS FIRST', $orders[0]);
@@ -152,7 +144,7 @@ final class SortTest extends TestCase
 
     public function testGetOrders(): void
     {
-        $this->sort->columns(
+        $sort = $this->sort->columns(
             [
                 'age',
                 'name' => [
@@ -162,24 +154,24 @@ final class SortTest extends TestCase
             ]
         )->params(['sort' => 'age,-name'])->multiSort();
 
-        $orders = $this->sort->getOrders();
+        $orders = $sort->getOrders();
 
         $this->assertCount(3, $orders);
         $this->assertSame(SORT_ASC, $orders['age']);
         $this->assertSame(SORT_DESC, $orders['first_name']);
         $this->assertSame(SORT_DESC, $orders['last_name']);
 
-        $this->sort->params(['sort' => '-age,name']);
+        $sort = $sort->params(['sort' => '-age,name']);
 
-        $orders = $this->sort->getOrders();
+        $orders = $sort->getOrders();
 
         $this->assertCount(3, $orders);
         $this->assertSame(SORT_DESC, $orders['age']);
         $this->assertSame(SORT_ASC, $orders['first_name']);
         $this->assertSame(SORT_ASC, $orders['last_name']);
 
-        $this->sort->multiSort(false);
-        $orders = $this->sort->getOrders();
+        $sort = $sort->multiSort(false);
+        $orders = $sort->getOrders();
 
         $this->assertCount(1, $orders);
         $this->assertSame(SORT_DESC, $orders['age']);
@@ -187,7 +179,7 @@ final class SortTest extends TestCase
 
     public function testGetSortParam(): void
     {
-        $this->sort
+        $sort = $this->sort
             ->columns(
                 [
                     'age',
@@ -200,19 +192,19 @@ final class SortTest extends TestCase
             ->multiSort()
             ->params(['sort' => 'age,-name']);
 
-        $this->assertSame(['sort' => '-age,-name'], $this->sort->getSortParam('age'));
-        $this->assertSame(['sort' => 'name,age'], $this->sort->getSortParam('name'));
+        $this->assertSame(['sort' => '-age,-name'], $sort->getSortParam('age'));
+        $this->assertSame(['sort' => 'name,age'], $sort->getSortParam('name'));
 
-        $this->sort->multiSort(false);
+        $sort = $sort->multiSort(false);
 
-        $this->assertSame(['sort' => '-age'], $this->sort->getSortParam('age'));
+        $this->assertSame(['sort' => '-age'], $sort->getSortParam('age'));
 
-        $this->sort
-            ->defaultColumnOrder(['age' => SORT_DESC, 'name' => SORT_ASC])
+        $sort = $sort
+            ->columnOrders(['age' => SORT_DESC, 'name' => SORT_ASC])
             ->multiSort()
             ->params(['sort' => 'age,name']);
 
-        $this->assertSame(['sort' => '-age,name'], $this->sort->getSortParam('age'));
+        $this->assertSame(['sort' => '-age,name'], $sort->getSortParam('age'));
     }
 
     public function testGetSortParamWithException(): void
@@ -220,18 +212,18 @@ final class SortTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Unknown attribute: unexistingAttribute');
 
-        $this->sort->columns(
+        $sort = $this->sort->columns(
             [
                 'age',
             ]
         )->params(['sort' => 'age,-name'])->multiSort();
 
-        $this->sort->getSortParam('unexistingAttribute');
+        $sort->getSortParam('unexistingAttribute');
     }
 
     public function testGetSortParams(): void
     {
-        $this->sort
+        $sort = $this->sort
             ->columns(
                 [
                     'age',
@@ -249,15 +241,15 @@ final class SortTest extends TestCase
                 'age' => ['sort' => '-age,-name'],
                 'name' => ['sort' => 'name,age'],
             ],
-            $this->sort->getSortParams(),
+            $sort->getSortParams(),
         );
 
-        $this->sort->multiSort(false);
+        $sort = $sort->multiSort(false);
 
-        $this->assertSame(['age' => ['sort' => '-age']], $this->sort->getSortParams());
+        $this->assertSame(['age' => ['sort' => '-age']], $sort->getSortParams());
 
-        $this->sort
-            ->defaultColumnOrder(['age' => SORT_DESC, 'name' => SORT_ASC])
+        $sort = $sort
+            ->columnOrders(['age' => SORT_DESC, 'name' => SORT_ASC])
             ->multiSort()
             ->params(['sort' => 'age,name']);
 
@@ -266,13 +258,13 @@ final class SortTest extends TestCase
                 'age' => ['sort' => '-age,name'],
                 'name' => ['sort' => '-name,age'],
             ],
-            $this->sort->getSortParams(),
+            $sort->getSortParams(),
         );
     }
 
     public function testSeparator(): void
     {
-        $this->sort->columns(
+        $sort = $this->sort->columns(
             [
                 'age',
                 'name' => [
@@ -282,18 +274,17 @@ final class SortTest extends TestCase
             ]
         )->params(['sort' => 'age,-name'])->multiSort();
 
-        $this->assertSame(['age' => SORT_ASC, 'name' => SORT_DESC], $this->sort->getColumnOrders());
+        $this->assertSame(['age' => SORT_ASC, 'name' => SORT_DESC], $sort->getColumnOrders());
 
-        $this->sort->separator('|');
-        $this->sort->params(['sort' => 'age|name']);
+        $sort = $sort->separator('|')->params(['sort' => 'age|name']);
 
-        $this->assertSame(['age' => SORT_ASC, 'name' => SORT_ASC], $this->sort->getColumnOrders(true));
+        $this->assertSame(['age' => SORT_ASC, 'name' => SORT_ASC], $sort->getColumnOrders(true));
     }
 
     public function testSortParamName(): void
     {
-        $this->sort->sortParamName('order');
+        $sort = $this->sort->sortParamName('order');
 
-        $this->assertSame('order', $this->sort->getSortParamName());
+        $this->assertSame('order', $sort->getSortParamName());
     }
 }

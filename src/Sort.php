@@ -39,7 +39,6 @@ use function substr;
  */
 final class Sort
 {
-    private array $defaultColumnOrder = [];
     private array $columns = [];
     private array|null $columnOrders = null;
     private bool $multiSort = false;
@@ -91,16 +90,18 @@ final class Sort
      */
     public function columns(array $values = []): self
     {
+        $new = clone $this;
+
         /** @psalm-var array<string,array|string> $values */
         foreach ($values as $name => $column) {
             if (!is_array($column)) {
-                $this->columns[$column] = ['asc' => [$column => SORT_ASC], 'desc' => [$column => SORT_DESC]];
+                $new->columns[$column] = ['asc' => [$column => SORT_ASC], 'desc' => [$column => SORT_DESC]];
             } else {
-                $this->columns[$name] = $column;
+                $new->columns[$name] = $column;
             }
         }
 
-        return $this;
+        return $new;
     }
 
     /**
@@ -112,51 +113,32 @@ final class Sort
      * If validation is enabled, wrong entries will be removed.
      *
      * @see multiSort
-     *
-     * @psalm-param array<string,int> $values
      */
-    public function columnOrders(array $values = [], bool $validate = true): void
+    public function columnOrders(array $values = [], bool $validate = true): self
     {
-        if ($validate === false) {
-            $this->columnOrders = $values;
+        $new = clone $this;
 
-            return;
+        if ($validate === false) {
+            $new->columnOrders = $values;
+
+            return $new;
         }
 
-        $this->columnOrders = [];
+        $new->columnOrders = [];
 
+
+        /** @psalm-var array<string,int> $values */
         foreach ($values as $column => $order) {
-            if ($this->hasColumn($column)) {
-                $this->columnOrders[$column] = $order;
+            if ($new->hasColumn($column)) {
+                $new->columnOrders[$column] = $order;
 
-                if ($this->multiSort === false) {
-                    return;
+                if ($new->multiSort === false) {
+                    return $new;
                 }
             }
         }
-    }
 
-    /**
-     * @param array $values The order that should be used when the current request doesn't specify any order.
-     *
-     * The array keys are column names and the array values are the corresponding sort directions.
-     *
-     * For example:
-     *
-     * ```php
-     * [
-     *     'name' => SORT_ASC,
-     *     'created_at' => SORT_DESC,
-     * ]
-     * ```
-     *
-     * @see columnOrders
-     */
-    public function defaultColumnOrder(array $values): self
-    {
-        $this->defaultColumnOrder = $values;
-
-        return $this;
+        return $new;
     }
 
     /**
@@ -182,33 +164,35 @@ final class Sort
      */
     public function getColumnOrders(bool $value = false): array
     {
-        if ($value === false && $this->columnOrders !== null) {
-            return $this->columnOrders;
+        $new = clone $this;
+
+        if ($value === false && $new->columnOrders !== null) {
+            return $new->columnOrders;
         }
 
-        if (isset($this->params[$this->sortParamName])) {
-            $this->columnOrders = [];
+        if (isset($new->params[$new->sortParamName])) {
+            $new->columnOrders = [];
 
-            $sortParamName = $this->parseSortParam((string) $this->params[$this->sortParamName]);
+            $sortParamName = $new->parseSortParam((string) $new->params[$new->sortParamName]);
 
             /** @psalm-var array<array-key,string> $sortParamName */
             foreach ($sortParamName as $column) {
                 $descending = str_starts_with($column, '-');
                 $column = $descending ? substr($column, 1) : $column;
 
-                if ($this->hasColumn($column)) {
-                    $this->columnOrders[$column] = $descending ? SORT_DESC : SORT_ASC;
+                if ($new->hasColumn($column)) {
+                    $new->columnOrders[$column] = $descending ? SORT_DESC : SORT_ASC;
 
-                    if (!$this->multiSort) {
+                    if ($new->multiSort === false) {
                         break;
                     }
                 }
             }
         } else {
-            $this->setDefaultColumnOrders();
+            $new = $new->columnOrders($new->columns, true);
         }
 
-        return $this->columnOrders ?? [];
+        return $new->columnOrders ?? [];
     }
 
     /**
@@ -320,9 +304,10 @@ final class Sort
      */
     public function multiSort(bool $value = true): self
     {
-        $this->multiSort = $value;
+        $new = clone $this;
+        $new->multiSort = $value;
 
-        return $this;
+        return $new;
     }
 
     /**
@@ -339,9 +324,10 @@ final class Sort
      */
     public function params(array $value): self
     {
-        $this->params = $value;
+        $new = clone $this;
+        $new->params = $value;
 
-        return $this;
+        return $new;
     }
 
     /**
@@ -349,9 +335,10 @@ final class Sort
      */
     public function separator(string $value): self
     {
-        $this->separator = $value ?: ',';
+        $new = clone $this;
+        $new->separator = $value ?: ',';
 
-        return $this;
+        return $new;
     }
 
     /**
@@ -362,9 +349,10 @@ final class Sort
      */
     public function sortParamName(string $value): self
     {
-        $this->sortParamName = $value;
+        $new = clone $this;
+        $new->sortParamName = $value;
 
-        return $this;
+        return $new;
     }
 
     /**
@@ -401,31 +389,5 @@ final class Sort
     private function parseSortParam(string $param): array
     {
         return explode($this->separator, $param);
-    }
-
-    private function setDefaultColumnOrders(): void
-    {
-        if ($this->defaultColumnOrder !== []) {
-            $this->columnOrders = $this->defaultColumnOrder;
-            return;
-        }
-
-        $defaultColumnOrder = [];
-
-        /**
-         * @var array-key $name
-         * @var array|int $definition
-         */
-        foreach ($this->columns as $name => $definition) {
-            if (is_array($definition) && isset($definition['asc'], $definition['desc'])) {
-                $defaultColumnOrder[$name] = SORT_ASC;
-            }
-
-            if ($this->multiSort === false) {
-                break;
-            }
-        }
-
-        $this->columnOrders = $defaultColumnOrder;
     }
 }
