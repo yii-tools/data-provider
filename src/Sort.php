@@ -123,32 +123,37 @@ final class Sort
      */
     public function getColumnOrders(): array
     {
+        /** @psalm-var string[] */
         $columns = $this->columns;
 
         if ($this->params === [] && $this->multiSort === false) {
             return array_slice($columns, 0, 1, true);
         }
 
-        if (isset($this->params[$this->sortParamName])) {
-            $sortParamName = $this->parseSortParam((string) $this->params[$this->sortParamName]);
-            $columns = [];
+        $columnOrders = [];
 
-            /** @psalm-var array<array-key,string> $sortParamName */
-            foreach ($sortParamName as $column) {
-                $descending = str_starts_with($column, '-');
-                $column = $descending ? substr($column, 1) : $column;
+        foreach ($columns as $name => $ignored) {
+            if (isset($this->params[$this->sortParamName])) {
+                /** @psalm-var array<array-key,string> $sortParamName */
+                $sortParamName = $this->parseSortParam((string) $this->params[$this->sortParamName]);
+                foreach ($sortParamName as $column) {
+                    $descending = str_starts_with($column, '-');
+                    $column = $descending ? substr($column, 1) : $column;
 
-                if ($this->hasColumn($column)) {
-                    $columns[$column] = $descending ? SORT_DESC : SORT_ASC;
+                    if ($this->hasColumn($column)) {
+                        $columnOrders[$column] = $descending ? SORT_DESC : SORT_ASC;
 
-                    if ($this->multiSort === false) {
-                        break;
+                        if ($this->multiSort === false) {
+                            break;
+                        }
                     }
                 }
+            } else {
+                $columnOrders[$name] = SORT_ASC;
             }
         }
 
-        return $columns;
+        return $columnOrders;
     }
 
     /**
@@ -157,10 +162,6 @@ final class Sort
      */
     public function getOrders(): array
     {
-        if ($this->params === []) {
-            return [];
-        }
-
         $columns = [];
         $columnOrders = $this->getColumnOrders();
 

@@ -116,26 +116,30 @@ final class SortTest extends TestCase
                     'desc' => ['first_name' => SORT_DESC, 'last_name' => SORT_DESC],
                 ],
             ]
-        )->params(['sort' => 'age,-name'])->multiSort();
+        )->multiSort();
 
         $orders = $sort->getOrders();
+
+        $this->assertCount(3, $orders);
+        $this->assertSame(SORT_ASC, $orders['age']);
+        $this->assertSame(SORT_ASC, $orders['first_name']);
+        $this->assertSame(SORT_ASC, $orders['last_name']);
+
+        $orders = $sort->params(['sort' => 'age,-name'])->getOrders();
 
         $this->assertCount(3, $orders);
         $this->assertSame(SORT_ASC, $orders['age']);
         $this->assertSame(SORT_DESC, $orders['first_name']);
         $this->assertSame(SORT_DESC, $orders['last_name']);
 
-        $sort = $sort->params(['sort' => '-age,name']);
-
-        $orders = $sort->getOrders();
+        $orders = $sort->params(['sort' => '-age,name'])->getOrders();
 
         $this->assertCount(3, $orders);
         $this->assertSame(SORT_DESC, $orders['age']);
         $this->assertSame(SORT_ASC, $orders['first_name']);
         $this->assertSame(SORT_ASC, $orders['last_name']);
 
-        $sort = $sort->multiSort(false);
-        $orders = $sort->getOrders();
+        $orders = $sort->multiSort(false)->getOrders();
 
         $this->assertCount(1, $orders);
         $this->assertSame(SORT_DESC, $orders['age']);
