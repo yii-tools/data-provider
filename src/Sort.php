@@ -39,7 +39,6 @@ use function substr;
  */
 final class Sort
 {
-    private array $defaultColumnOrder = [];
     private array $columns = [];
     private array|null $columnOrders = null;
     private bool $multiSort = false;
@@ -144,30 +143,6 @@ final class Sort
     }
 
     /**
-     * @param array $values The order that should be used when the current request doesn't specify any order.
-     *
-     * The array keys are column names and the array values are the corresponding sort directions.
-     *
-     * For example:
-     *
-     * ```php
-     * [
-     *     'name' => SORT_ASC,
-     *     'created_at' => SORT_DESC,
-     * ]
-     * ```
-     *
-     * @see columnOrders
-     */
-    public function defaultColumnOrder(array $values): self
-    {
-        $new = clone $this;
-        $new->defaultColumnOrder = $values;
-
-        return $new;
-    }
-
-    /**
      * @param string $value The column name.
      *
      * @return int|null Sort direction of the column.
@@ -215,7 +190,7 @@ final class Sort
                 }
             }
         } else {
-            $new = $new->setDefaultColumnOrders();
+            $new = $new->columnOrders($new->columns, true);
         }
 
         return $new->columnOrders ?? [];
@@ -415,35 +390,5 @@ final class Sort
     private function parseSortParam(string $param): array
     {
         return explode($this->separator, $param);
-    }
-
-    private function setDefaultColumnOrders(): self
-    {
-        $new = clone $this;
-
-        if ($new->defaultColumnOrder !== []) {
-            $new->columnOrders = $new->defaultColumnOrder;
-            return $new;
-        }
-
-        $defaultColumnOrder = [];
-
-        /**
-         * @var array-key $name
-         * @var array|int $definition
-         */
-        foreach ($new->columns as $name => $definition) {
-            if (is_array($definition) && isset($definition['asc'], $definition['desc'])) {
-                $defaultColumnOrder[$name] = SORT_ASC;
-            }
-
-            if ($new->multiSort === false) {
-                break;
-            }
-        }
-
-        $new->columnOrders = $defaultColumnOrder;
-
-        return $new;
     }
 }
