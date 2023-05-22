@@ -113,8 +113,6 @@ final class Sort
      * If validation is enabled, wrong entries will be removed.
      *
      * @see multiSort
-     *
-     * @psalm-param array<string,int> $values
      */
     public function columnOrders(array $values = [], bool $validate = true): self
     {
@@ -129,6 +127,7 @@ final class Sort
         $new->columnOrders = [];
 
 
+        /** @psalm-var array<string,int> $values */
         foreach ($values as $column => $order) {
             if ($new->hasColumn($column)) {
                 $new->columnOrders[$column] = $order;
