@@ -29,36 +29,6 @@ final class SortTest extends TestCase
         unset($this->sort);
     }
 
-    public function testColumnOrders(): void
-    {
-        $sort = $this->sort->columns(
-            [
-                'age',
-                'name' => [
-                    'asc' => ['first_name' => SORT_ASC, 'last_name' => SORT_ASC],
-                    'desc' => ['first_name' => SORT_DESC, 'last_name' => SORT_DESC],
-                ],
-            ]
-        )->params(['sort' => 'age,-name'])->multiSort();
-
-        $sort = $sort->columnOrders(['age' => SORT_DESC, 'name' => SORT_ASC]);
-        $this->assertSame(['age' => SORT_DESC, 'name' => SORT_ASC], $sort->getColumnOrders());
-
-        $sort = $sort->multiSort(false);
-
-        $sort = $sort->columnOrders(['age' => SORT_DESC, 'name' => SORT_ASC]);
-        $this->assertSame(['age' => SORT_DESC], $sort->getColumnOrders());
-
-        $sort = $sort->columnOrders(['age' => SORT_DESC, 'name' => SORT_ASC], false);
-        $this->assertSame(['age' => SORT_DESC, 'name' => SORT_ASC], $sort->getColumnOrders());
-
-        $sort = $sort->columnOrders(['unexistingAttribute' => SORT_ASC]);
-        $this->assertSame([], $sort->getColumnOrders());
-
-        $sort = $sort->columnOrders(['unexistingAttribute' => SORT_ASC], false);
-        $this->assertSame(['unexistingAttribute' => SORT_ASC], $sort->getColumnOrders());
-    }
-
     public function testGetColumnOrder(): void
     {
         $sort = $this->sort->columns(
@@ -89,6 +59,7 @@ final class SortTest extends TestCase
         )->params(['sort' => 'age,-name'])->multiSort();
 
         $orders = $sort->getColumnOrders();
+
         $this->assertCount(2, $orders);
         $this->assertSame(SORT_ASC, $orders['age']);
         $this->assertSame(SORT_DESC, $orders['name']);
@@ -102,16 +73,9 @@ final class SortTest extends TestCase
 
     public function testGetColumnOrdersWithEmpty(): void
     {
-        $sort = $this->sort->columns(['age', 'name'])->multiSort();
-
+        $sort = $this->sort->columns(['age', 'name'])->multiSort(false);
         $orders = $sort->getColumnOrders();
-        $this->assertCount(2, $orders);
-        $this->assertSame(['asc' => ['age' => SORT_ASC], 'desc' => ['age' => SORT_DESC]], $orders['age']);
-        $this->assertSame(['asc' => ['name' => SORT_ASC], 'desc' => ['name' => SORT_DESC]], $orders['name']);
 
-        $sort = $sort->multiSort(false);
-
-        $orders = $sort->getColumnOrders(true);
         $this->assertCount(1, $orders);
         $this->assertSame(['asc' => ['age' => SORT_ASC], 'desc' => ['age' => SORT_DESC]], $orders['age']);
     }
@@ -198,13 +162,6 @@ final class SortTest extends TestCase
         $sort = $sort->multiSort(false);
 
         $this->assertSame(['sort' => '-age'], $sort->getSortParam('age'));
-
-        $sort = $sort
-            ->columnOrders(['age' => SORT_DESC, 'name' => SORT_ASC])
-            ->multiSort()
-            ->params(['sort' => 'age,name']);
-
-        $this->assertSame(['sort' => '-age,name'], $sort->getSortParam('age'));
     }
 
     public function testGetSortParamWithException(): void
@@ -247,19 +204,16 @@ final class SortTest extends TestCase
         $sort = $sort->multiSort(false);
 
         $this->assertSame(['age' => ['sort' => '-age']], $sort->getSortParams());
+    }
 
-        $sort = $sort
-            ->columnOrders(['age' => SORT_DESC, 'name' => SORT_ASC])
-            ->multiSort()
-            ->params(['sort' => 'age,name']);
-
-        $this->assertSame(
-            [
-                'age' => ['sort' => '-age,name'],
-                'name' => ['sort' => '-name,age'],
-            ],
-            $sort->getSortParams(),
-        );
+    public function testInmutable(): void
+    {
+        $sort = new Sort();
+        $this->assertNotSame($sort, $sort->columns([]));
+        $this->assertNotSame($sort, $sort->multiSort());
+        $this->assertNotSame($sort, $sort->params([]));
+        $this->assertNotSame($sort, $sort->sortParamName(''));
+        $this->assertNotSame($sort, $sort->separator(''));
     }
 
     public function testSeparator(): void

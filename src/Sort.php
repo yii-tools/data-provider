@@ -40,7 +40,6 @@ use function substr;
 final class Sort
 {
     private array $columns = [];
-    private array|null $columnOrders = null;
     private bool $multiSort = false;
     private array $params = [];
     /** @psalm-var non-empty-string */
@@ -105,43 +104,6 @@ final class Sort
     }
 
     /**
-     * Sets up the current sort information.
-     *
-     * @param array $values Sort directions indexed by column names.
-     * Sort direction can be either `SORT_ASC` for ascending order or `SORT_DESC` for descending order.
-     * @param bool $validate Whether to validate given column orders against {@see columns}.
-     * If validation is enabled, wrong entries will be removed.
-     *
-     * @see multiSort
-     */
-    public function columnOrders(array $values = [], bool $validate = true): self
-    {
-        $new = clone $this;
-
-        if ($validate === false) {
-            $new->columnOrders = $values;
-
-            return $new;
-        }
-
-        $new->columnOrders = [];
-
-
-        /** @psalm-var array<string,int> $values */
-        foreach ($values as $column => $order) {
-            if ($new->hasColumn($column)) {
-                $new->columnOrders[$column] = $order;
-
-                if ($new->multiSort === false) {
-                    return $new;
-                }
-            }
-        }
-
-        return $new;
-    }
-
-    /**
      * @param string $value The column name.
      *
      * @return int|null Sort direction of the column.
@@ -150,49 +112,43 @@ final class Sort
      */
     public function getColumnOrder(string $value): int|null
     {
-        /** @psalm-var array<array-key,int> $orders */
         $orders = $this->getColumnOrders();
 
         return $orders[$value] ?? null;
     }
 
     /**
-     * @param bool $value Whether to recalculate the sort directions.
-     *
      * @return array Sort directions indexed by column names.
      * Sort direction can be either `SORT_ASC` for ascending order or `SORT_DESC` for descending order.
      */
-    public function getColumnOrders(bool $value = false): array
+    public function getColumnOrders(): array
     {
-        $new = clone $this;
+        $columns = $this->columns ?? [];
 
-        if ($value === false && $new->columnOrders !== null) {
-            return $new->columnOrders;
+        if ($this->params === [] && $this->multiSort === false) {
+            return array_slice($columns, 0, 1, true);
         }
 
-        if (isset($new->params[$new->sortParamName])) {
-            $new->columnOrders = [];
-
-            $sortParamName = $new->parseSortParam((string) $new->params[$new->sortParamName]);
+        if (isset($this->params[$this->sortParamName])) {
+            $sortParamName = $this->parseSortParam((string) $this->params[$this->sortParamName]);
+            $columns = [];
 
             /** @psalm-var array<array-key,string> $sortParamName */
             foreach ($sortParamName as $column) {
                 $descending = str_starts_with($column, '-');
                 $column = $descending ? substr($column, 1) : $column;
 
-                if ($new->hasColumn($column)) {
-                    $new->columnOrders[$column] = $descending ? SORT_DESC : SORT_ASC;
+                if ($this->hasColumn($column)) {
+                    $columns[$column] = $descending ? SORT_DESC : SORT_ASC;
 
-                    if ($new->multiSort === false) {
+                    if ($this->multiSort === false) {
                         break;
                     }
                 }
             }
-        } else {
-            $new = $new->columnOrders($new->columns, true);
         }
 
-        return $new->columnOrders ?? [];
+        return $columns;
     }
 
     /**
@@ -201,8 +157,12 @@ final class Sort
      */
     public function getOrders(): array
     {
+        if ($this->params === []) {
+            return [];
+        }
+
         $columns = [];
-        $columnOrders = $this->getColumnOrders(true);
+        $columnOrders = $this->getColumnOrders();
 
         /** @psalm-var array<string,int> $columnOrders */
         foreach ($columnOrders as $column => $direction) {
@@ -236,9 +196,9 @@ final class Sort
             throw new InvalidArgumentException("Unknown attribute: $column");
         }
 
-        $directions = $this->getColumnOrders(true);
-
+        $directions = $this->getColumnOrders();
         $direction = isset($directions[$column]) && $directions[$column] === SORT_DESC ? SORT_ASC : SORT_DESC;
+
         unset($directions[$column]);
 
         $directions = match ($this->multiSort) {
@@ -264,7 +224,7 @@ final class Sort
     public function getSortParams(): array
     {
         $sortParams = [];
-        $columnOrders = $this->getColumnOrders(true);
+        $columnOrders = $this->getColumnOrders();
 
         /** @psalm-var array<string,int> $columnOrders */
         foreach ($columnOrders as $column => $direction) {
